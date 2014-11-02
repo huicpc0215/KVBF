@@ -10,5 +10,7 @@
 =============================================================================*/
 #define CellNumber 1000
 class BloomFilter{
+    //
     BloomFilterCell B[CellNumber];
+
 };
