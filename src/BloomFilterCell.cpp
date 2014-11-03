@@ -1,5 +1,10 @@
 #include"BloomFilterCell.h"
 
+BloomFilterCell::BloomFilterCell(){
+    cnt=INF;
+    BFlength=512;
+    next=-1;
+}
 BloomFilterCell::BloomFilterCell(int _cnt=INF,int _BFlength=512,int _next=-1){
     cnt=_cnt;
     BFlength=_BFlength;
@@ -20,10 +25,11 @@ int BloomFilterCell::get_cnt(){
 
 void BloomFilterCell::increase_cnt(){
     cnt++;
-    if(cnt==this->INF)init();
+    if(cnt>=this->INF)init();
 }
 
 void BloomFilterCell::set_next(int _next){
+    cnt=0;
     next=_next;
 }
 

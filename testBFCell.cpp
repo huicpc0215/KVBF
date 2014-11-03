@@ -10,15 +10,18 @@ BloomFilterCell B;
 
 int main(){
     cout<<"B cnt="<<B.get_cnt()<<endl;
-    cout<<"B next="<<B.get_next()<<endl;
+    cout<<"B next="<<B.check_next()<<endl;
     cout<<"set B"<<endl;
     B.set_next(10);
-    cout<<"B next="<<B.get_next()<<endl;
+    cout<<"B next="<<B.check_next()<<endl;
+    cout<<"B cnt="<<B.get_cnt()<<endl;
     cout<<"increase B"<<endl;
     B.increase_cnt();
+    cout<<"B cnt="<<B.get_cnt()<<endl;
     for(int i=0;i<=10;i++){
-        cout<<"B cnt="<<B.get_cnt()<<endl;
         B.increase_cnt();
+        cout<<"B cnt="<<B.get_cnt()<<endl;
+        cout<<"B next="<<B.check_next()<<endl;
     }
 
     return 0;

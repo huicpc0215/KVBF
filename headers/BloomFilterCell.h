@@ -11,6 +11,11 @@
 
 class BloomFilterCell{
     private:
+    //use INF to show that the element in the cell is no longer useful to now.
+    //type : int
+    //default value : 10;
+    static const int INF=10;
+
     //use cnt to count the number of how many digits has hashed into this
     //type : int
     //0: the element has just insert into the Cell
@@ -20,7 +25,7 @@ class BloomFilterCell{
     //use BFlength  to save the length of all the BloomFilter
     //type: int
     //default : 512
-    int BFlength=512;
+    int BFlength;
     //use pointer to  another single Cell that save one Cell
     //type:  int
     //-1: initiation  with no use in the cell
@@ -29,13 +34,15 @@ class BloomFilterCell{
     int next;
 
     public:
-    //use INF to show that the element in the cell is no longer useful to now.
-    //type : int
-    //default value : 10;
-    const int INF=10;
+
+    // defaul construction
+    BloomFilterCell();
 
     // construction function
     BloomFilterCell(int _cnt,int _BFlength,int _next);
+
+    // destory function
+    ~BloomFilterCell();
 
     // init this cell
     // return : void
