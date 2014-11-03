@@ -1,18 +1,17 @@
-objects=main.o BloomFilter.o BloomFilterCell.o 
-INCLUDE=headers:src
-main: main.o BloomFilterCell.o BloomFilter.o
-	g++ $(objects) -o main
+CC=g++ -g
+MCC=$(CC) -c
+VPATH=src:headers
+SRC=$(wildcard *.cpp ./src/*.cpp)
+INCLUDE=-Iheaders
+OBJ=$(patsubst %.cpp,%.o,$(notdir $(SRC)))
+EXE=main
+$(EXE):${OBJ}
+	$(CC) $^ -o $(EXE) $(INCLUDE)
 
-main.o: main.cpp main.h
-	g++ -l$(INCLUDE) -c main.cpp -o main.o
-
-BloomFilter.o: BloomFilter.cpp BloomFilter.h
-	g++ -l$(INCLUDE) -c BloomFilter.cpp -o BloomFilter.o
-
-BloomFilterCell.o: BloomFilterCell.cpp BloomFilterCell.h
-	g++ -l$(INCLUDE) -c BloomFilterCell.cpp -o BloomFilterCell.o
+%.o:%.cpp
+	$(MCC) $< -o $@ $(INCLUDE)
 
 clean:
-	rm $(objects)
+	rm $(OBJ)
 
 	

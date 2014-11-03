@@ -6,14 +6,17 @@ MEX=$(CC) $(LDFLAGS)
 MCC=$(CC) -c
 EXE=main
 
-OBJ   = main.o b.o
-EXE   = winner
+SRC=$(wildcard *.cpp ./src/*.cpp)
+OBJ=$(patsubst %.cpp,%.o,$(notdir $(SRC)))
+EXE=main
 
 all:$(EXE)
 
 $(EXE): ${OBJ}
-   $(MEX) $^ -o $@
+   $(MEX) $^ -o $@ $(INCLUDE)
+
 %.o: %.cpp
-   $(MCC) $< -o $@
+   $(MCC) $< -o $@ $(INCLUDE)
+
 clean:     
    rm -f *.o $(EXE) core 
