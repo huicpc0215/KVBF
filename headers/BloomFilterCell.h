@@ -11,11 +11,6 @@
 
 class BloomFilterCell{
     private:
-    //use INF to show that the element in the cell is no longer useful to now.
-    //type : int
-    //default value : 10;
-    const int INF=10;
-
     //use cnt to count the number of how many digits has hashed into this
     //type : int
     //0: the element has just insert into the Cell
@@ -34,53 +29,39 @@ class BloomFilterCell{
     int next;
 
     public:
+    //use INF to show that the element in the cell is no longer useful to now.
+    //type : int
+    //default value : 10;
+    const int INF=10;
+
     // construction function
-    BloomFilterCell(int _cnt=INF,int _BFlength=512,int _next=-1){
-        cnt=_cnt;
-        BFlength=_BFlength;
-        next=_next;
-    }
+    BloomFilterCell(int _cnt,int _BFlength,int _next);
+
     // init this cell
     // return : void
     // usage : init the cell
-    void init(){
-        cnt=INF;
-        next=-1;
-    }
+    void init();
+
     // get cnt
     // return int
     // usage : get count number of the cell
-    int get_cnt(){
-        return cnt;
-    }
+    int get_cnt();
+
     // increase cnt by one
     // return : void
     // usage : increase count number by one
-    void Increase_cnt(){
-        cnt++;
-        if(cnt==INF)init();
-    }
+    void increase_cnt();
+
     // set next pure cell
     // return : void
     // usage : set next cell
-    void set_next(int _next){
-        next=_next;
-    }
+    void set_next(int _next);
+
     // check_next
     // return : int(0,1,2)
     // 0 : NULL
     // 1 : pure cell
     // 2 : mixed cell
     // usage: check the cell state
-    int check_next(){
-        if(next==-1) return 0;
-        else if(next==BFlength) return 2;
-        return 1;
-    }
+    int check_next();
 };
-
-int main(){
-
-    return 0;
-}
-
