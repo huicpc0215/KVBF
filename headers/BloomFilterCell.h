@@ -59,9 +59,9 @@ class BloomFilterCell{
 
     // check_next
     // return : int(0,1,2)
-    // 0 : NULL
-    // 1 : pure cell
-    // 2 : mixed cell
+    // -1 : NULL
+    // 0-m-1 : pure cell
+    // -2 : mixed cell
     // usage: check the cell state
     int check_next();
 };
