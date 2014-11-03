@@ -1,0 +1,19 @@
+CC=g++ -g
+VPATH=
+CXXFLAGS=-lgcc_s 
+INCLUDE=./src:./headers
+MEX=$(CC) $(LDFLAGS)
+MCC=$(CC) -c
+EXE=main
+
+OBJ   = main.o b.o
+EXE   = winner
+
+all:$(EXE)
+
+$(EXE): ${OBJ}
+   $(MEX) $^ -o $@
+%.o: %.cpp
+   $(MCC) $< -o $@
+clean:     
+   rm -f *.o $(EXE) core 
