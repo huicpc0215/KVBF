@@ -11,13 +11,17 @@
 
 #ifndef TimeBloomFilter_headers_TimeBloomFilter_H_
 #define TimeBloomFilter_headers_TimeBloomFilter_H_
-#define CellNumber 512
 #include<vector>
 class TimeBloomFilter{
     private:
     // Cellnumber BloomfilterCell also
     // type: BloomfilterCell
-    BloomFilterCell B[CellNumber];
+    vector<BloomFilterCell> B;
+    vector<int> B_second;
+
+    // cellnumber
+    // type: int
+    int CellNumber;
 
     // hash number
     // type : int
@@ -26,7 +30,7 @@ class TimeBloomFilter{
     // k's hash that shows the k distinct number for any Integer
     // parameters: int x ( that to be hashed ) , int k ( hash number )
     // return : hashed position vector
-    vector<int> getHash(int x);
+    vector<int> get_hash(int x);
 
     public:
     // insert a integer and set the k position to zero
@@ -36,6 +40,9 @@ class TimeBloomFilter{
 
     //construction function
     TimeBloomFilter();
+
+    //construction with Cellnumber's bloomfiltercell
+    TimeBloomFilter(int x);
 
     // query a integer how long the number has hashed into.
     // parameters: int x( that want to query if the element has hashed into the TimeBloomFilter)

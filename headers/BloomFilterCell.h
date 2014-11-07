@@ -61,10 +61,12 @@ class BloomFilterCell{
     // usage : increase count number by one
     void increase_cnt();
 
-    // set next pure cell
+    // set next pure cell ,
+    // if setzero=true then set the cell cnt to zero
+    // else not to set the cnt to zero
     // return : void
     // usage : set next cell
-    void set_next(int _next);
+    void set_next(int _next,bool setzero);
 
     // check_next
     // return : int(0,1,2)
