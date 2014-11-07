@@ -10,6 +10,7 @@ BloomFilterCell::BloomFilterCell(int _cnt=INF,int _BFlength=512,int _next=-1){
     BFlength=_BFlength;
     next=_next;
 }
+
 BloomFilterCell::~BloomFilterCell(){
 
 }
@@ -28,8 +29,8 @@ void BloomFilterCell::increase_cnt(){
     if(cnt>=this->INF)init();
 }
 
-void BloomFilterCell::set_next(int _next){
-    cnt=0;
+void BloomFilterCell::set_next(int _next,bool f){
+    if(f)cnt=0;
     next=_next;
 }
 
