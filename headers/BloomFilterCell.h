@@ -9,6 +9,8 @@
 #      History:
 =============================================================================*/
 
+#ifndef TimeBloomFilter_headers_BloomFilterCell_H_
+#define TimeBloomFilter_headers_BloomFilterCell_H_
 class BloomFilterCell{
     private:
     //use INF to show that the element in the cell is no longer useful to now.
@@ -72,3 +74,4 @@ class BloomFilterCell{
     // usage: check the cell state
     int check_next();
 };
+#endif
