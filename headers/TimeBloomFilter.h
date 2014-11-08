@@ -11,6 +11,7 @@
 
 #ifndef TimeBloomFilter_headers_TimeBloomFilter_H_
 #define TimeBloomFilter_headers_TimeBloomFilter_H_
+#include"BloomFilterCell.h"
 #include<vector>
 class TimeBloomFilter{
     private:
