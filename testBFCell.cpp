@@ -12,7 +12,7 @@ int main(){
     cout<<"B cnt="<<B.get_cnt()<<endl;
     cout<<"B next="<<B.check_next()<<endl;
     cout<<"set B"<<endl;
-    B.set_next(10);
+    B.set_next(10,true);
     cout<<"B next="<<B.check_next()<<endl;
     cout<<"B cnt="<<B.get_cnt()<<endl;
     cout<<"increase B"<<endl;

@@ -9,10 +9,13 @@
 #      History:
 =============================================================================*/
 
+
 #ifndef TimeBloomFilter_headers_TimeBloomFilter_H_
 #define TimeBloomFilter_headers_TimeBloomFilter_H_
 #include"BloomFilterCell.h"
 #include<vector>
+using namespace std;
+
 class TimeBloomFilter{
     private:
     // Cellnumber BloomfilterCell also
@@ -43,8 +46,10 @@ class TimeBloomFilter{
     TimeBloomFilter();
 
     //construction with Cellnumber's bloomfiltercell
-    TimeBloomFilter(int x);
+    TimeBloomFilter(int _cellnumber);
 
+    //constuction with Cellnumber and hash number
+    TimeBloomFilter(int _cellnumber,int _hashnumber);
     // query a integer how long the number has hashed into.
     // parameters: int x( that want to query if the element has hashed into the TimeBloomFilter)
     // return : 0-INF how long the number has hashed into

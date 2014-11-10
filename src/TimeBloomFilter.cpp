@@ -20,16 +20,31 @@ TimeBloomFilter::TimeBloomFilter(){
     }
 }
 
-TimeBloomFilter::TimeBloomFilter(int number){
-    CellNumber=number;
+TimeBloomFilter::TimeBloomFilter(int _cellnumber){
+    CellNumber=_cellnumber;
     for(int i=0;i<CellNumber;i++){
         B.push_back(BloomFilterCell());
         B_second.push_back(-1);
     }
+    hashnumber=4;
 }
-vector<int> TimeBloomFilter::getHash(int x){
+TimeBloomFilter::TimeBloomFilter(int _cellnumber,int _hashnumber){
+    CellNumber=_cellnumber;
+    for(int i=0;i<CellNumber;i++){
+        B.push_back(BloomFilterCell());
+        B_second.push_back(-1);
+    }
+    hashnumber=_hashnumber;
+}
+vector<int> TimeBloomFilter::get_hash(int x){
+    vector<int> res;
+    for(int i=0;i<hashnumber;i++){
 
 
+        res.push_back(x%10);
+        x/=10;
+    }
+    return res;
 }
 
 void TimeBloomFilter::insert(int x){
@@ -62,7 +77,7 @@ int TimeBloomFilter::query(int x){
     bool has_none_value=false;
     for(int i=0;i<sz;i++){
         int k=B[ hash[i] ].check_next();
-        if( k>=0 && k< m ) return B[ hash[i] ].get_cnt();
+        if( k>=0 && k< CellNumber) return B[ hash[i] ].get_cnt();
         if( k==none_value ) has_none_value=true;
     }
     if( has_none_value ) return none_value;
@@ -79,7 +94,3 @@ void TimeBloomFilter::increase(){
         B_second[i]++;
     }
 }
-
-
-
-
