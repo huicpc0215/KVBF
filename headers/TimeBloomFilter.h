@@ -31,16 +31,24 @@ class TimeBloomFilter{
     // type : int
     int hashnumber;
 
-    // k's hash that shows the k distinct number for any Integer
-    // parameters: int x ( that to be hashed ) , int k ( hash number )
-    // return : hashed position vector
-    vector<int> get_hash(int x);
+    // hash type
+    // type: int
+    int hashtype;
+
+
+    // murmurhash source code
+    unsigned int murmurhash(const void *key, int seed);
 
     public:
     // insert a integer and set the k position to zero
     // parameters: int x ( that want to insert into the TimeBloomFilter)
     // return : void
     void insert(int x);
+
+    // k's hash that shows the k distinct number for any Integer
+    // parameters: int x ( that to be hashed ) , int k ( hash number )
+    // return : hashed position vector
+    vector<int> get_hash(int x);
 
     //construction function
     TimeBloomFilter();
@@ -50,6 +58,11 @@ class TimeBloomFilter{
 
     //constuction with Cellnumber and hash number
     TimeBloomFilter(int _cellnumber,int _hashnumber);
+
+    // set hash type
+    // if x == 1  set the hashtype to mormorhash
+    void set_hashtype(int x);
+
     // query a integer how long the number has hashed into.
     // parameters: int x( that want to query if the element has hashed into the TimeBloomFilter)
     // return : 0-INF how long the number has hashed into
@@ -59,5 +72,6 @@ class TimeBloomFilter{
     // parameters: NULL
     // return : void
     void increase();
+
 };
 #endif
