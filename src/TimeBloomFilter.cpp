@@ -29,16 +29,16 @@ TimeBloomFilter::TimeBloomFilter(int _cellnumber){
     printf("in construction 1");
     CellNumber=_cellnumber;
     for(int i=0;i<CellNumber;i++){
-        B.push_back(BloomFilterCell());
+        B.push_back(BloomFilterCell(INF,-1));
         B_second.push_back(-1);
     }
-    hashnumber=3;
+    hashnumber=4;
 }
 TimeBloomFilter::TimeBloomFilter(int _cellnumber,int _hashnumber){
     printf("in construction 2");
     CellNumber=_cellnumber;
     for(int i=0;i<CellNumber;i++){
-        B.push_back(BloomFilterCell());
+        B.push_back(BloomFilterCell(INF,-1));
         B_second.push_back(-1);
     }
     hashnumber=_hashnumber;
@@ -106,16 +106,16 @@ vector<int> TimeBloomFilter::get_hash(int x){
 }
 
 void TimeBloomFilter::set_hashtype(int x){
-    printf("inhere ");
     hashtype=x;
-    puts("right");
 }
 
 void TimeBloomFilter::insert(int x){
     //printf("in insert()");
     vector<int> hash=get_hash(x);
     vector<int> Nullcell;
+
     int sz=hash.size();
+    printf("insert = %d\n",x);
     for(int i=0;i<sz;i++){
         int k=B[ hash[i] ].check_next();
         if( k==NONE_VALUE)Nullcell.push_back( hash[i] );
@@ -129,6 +129,7 @@ void TimeBloomFilter::insert(int x){
             B[ p ].set_next( B[hash[i]].check_next() , false);
             B[ hash[i] ].set_next(MIX_VALUE,true);
         }
+        printf("hash[%d]=%d\n",i,hash[i]);
     }
     sz=Nullcell.size();
     for(int i=0;i<sz;i++){
@@ -143,7 +144,18 @@ int TimeBloomFilter::query(int x){
     bool has_none_value=false;
     for(int i=0;i<sz;i++){
         int k=B[ hash[i] ].check_next();
-        if( k>=0 && k< CellNumber) return B[ hash[i] ].get_cnt();
+        if( k>=0 && k< CellNumber) {
+            int p=hash[i];
+            bool fg=true;
+            while(k!=p){
+                if(*lower_bound(hash.begin(),hash.end(),k)!=k){
+                    fg=false;
+                    break;
+                }
+                else k=B[k].check_next();
+            }
+            if(fg)return B[ hash[i] ].get_cnt();
+        }
         if( k==NONE_VALUE) has_none_value=true;
     }
     if( has_none_value ) return NONE_VALUE;

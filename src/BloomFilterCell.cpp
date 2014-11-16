@@ -1,13 +1,12 @@
 #include"BloomFilterCell.h"
 
+#define NONE_VALUE -1
 BloomFilterCell::BloomFilterCell(){
-    cnt=INF;
-    BFlength=512;
+    cnt=this->INF;
     next=-1;
 }
-BloomFilterCell::BloomFilterCell(int _cnt=INF,int _BFlength=512,int _next=-1){
+BloomFilterCell::BloomFilterCell(int _cnt=INF,int _next=-1){
     cnt=_cnt;
-    BFlength=_BFlength;
     next=_next;
 }
 
@@ -17,7 +16,7 @@ BloomFilterCell::~BloomFilterCell(){
 
 void BloomFilterCell::init(){
     cnt=this->INF;
-    next=-1;
+    next=NONE_VALUE;
 }
 
 int BloomFilterCell::get_cnt(){

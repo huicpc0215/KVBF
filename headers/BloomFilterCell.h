@@ -24,10 +24,6 @@ class BloomFilterCell{
     //INF: initiation value , means that the information has no use
     int cnt;
 
-    //use BFlength  to save the length of all the BloomFilter
-    //type: int
-    //default : 512
-    int BFlength;
     //use pointer to  another single Cell that save one Cell
     //type:  int
     //-1: initiation  with no use in the cell
@@ -41,7 +37,7 @@ class BloomFilterCell{
     BloomFilterCell();
 
     // construction function
-    BloomFilterCell(int _cnt,int _BFlength,int _next);
+    BloomFilterCell(int _cnt,int _next);
 
     // destory function
     ~BloomFilterCell();
