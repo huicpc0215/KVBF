@@ -43,13 +43,12 @@ TimeBloomFilter::TimeBloomFilter(int _cellnumber,int _hashnumber){
     }
     hashnumber=_hashnumber;
 }
-unsigned int TimeBloomFilter::murmurhash(const void *key,int seed){
+unsigned int TimeBloomFilter::murmurhash(const void *key,int len,int seed){
     //printf("in mumurhash\n");
     // 'm' and 'r' are mixing constants generated offline.
     // They're not really 'magic', they just happen to work well.
     const unsigned int m = 0x5bd1e995;
     const int r = 24;
-    int len=1;
     int x=(int)key;
     //while(x){
     //    len++;
@@ -91,12 +90,18 @@ unsigned int TimeBloomFilter::murmurhash(const void *key,int seed){
 vector<int> TimeBloomFilter::get_hash(int x){
     //printf("in get_hash");
     vector<int> res;
+    char tmp[20];
+    int len=0;
+    while(x){
+        tmp[len++]=(x%10)+'0';
+        x/=10;
+    }
     int low_bound=0;
     unsigned int seed=0;
     //printf(" hashtype =%d murmurhash=%d\n",hashtype, MURMURHASH );
     for(int i=0;i<hashnumber;i++){
         if( hashtype == MURMURHASH){
-            seed = murmurhash( &x, seed );
+            seed = murmurhash( tmp, len, seed );
             res.push_back( seed % (CellNumber/hashnumber)+low_bound);
             low_bound+=CellNumber/hashnumber;
             //printf("res-> %d\n",seed%CellNumber);

@@ -37,7 +37,7 @@ class TimeBloomFilter{
 
 
     // murmurhash source code
-    unsigned int murmurhash(const void *key, int seed);
+    unsigned int murmurhash(const void *key, int len , int seed);
 
     public:
     // insert a integer and set the k position to zero
