@@ -20,7 +20,6 @@ class TimeBloomFilter{
     private:
     // Cellnumber BloomfilterCell also
     // type: BloomfilterCell
-    vector<BloomFilterCell> B;
     vector<int> B_second;
 
     // cellnumber
@@ -44,6 +43,8 @@ class TimeBloomFilter{
     // parameters: int x ( that want to insert into the TimeBloomFilter)
     // return : void
     void insert(int x);
+
+    vector<BloomFilterCell> B;
 
     // k's hash that shows the k distinct number for any Integer
     // parameters: int x ( that to be hashed ) , int k ( hash number )
