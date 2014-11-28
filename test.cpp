@@ -43,12 +43,15 @@ int main(){
         s.insert(k);
         timeline[i/OBJ_PER_SEC].insert(k);
     }
+    for(int i=0;i<SIMULATION_TIME;i++){
+        printf("time %d insert %d things\n",i,timeline[i].size());
+    }
     puts("Generation OK!");
     for(int i=0;i<SIMULATION_TIME;i++){
         for(it=timeline[i].begin();it!=timeline[i].end();it++){
             TM.insert(*it);
         }
-        printf("enter anything\n");
+        printf("enter to continue \n");
         getchar();
         test_no_exist.clear();
         test_exist.clear();
@@ -69,6 +72,8 @@ int main(){
                     count_test_exist_ok++;
                     break;
                 case EXIST_QUERY_WRONG:
+                    puts("here wrong appears");
+                    printf(" BF_answer=%d real_answer =%d\n",BF_answer,real_answer);
                     break;
             }
         }
