@@ -8,6 +8,8 @@
 *.exe
 *.out
 *.app
+main
 
 #Tmp cpp file
 *.cpp~
+
