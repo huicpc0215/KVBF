@@ -134,6 +134,9 @@ void TimeBloomFilter::insert(int x){
             B[ p ].set_next( B[hash[i]].check_next() , false);
             B[ hash[i] ].set_next(MIX_VALUE,true);
         }
+        else if( k == MIX_VALUE ){
+            B[ hash[i] ].set_next( MIX_VALUE , true );
+        }
         printf("hash[%d]=%d\n",i,hash[i]);
     }
     sz=Nullcell.size();
@@ -169,6 +172,16 @@ int TimeBloomFilter::query(int x){
         res=min( res,B_second[hash[i]] );
     }
     return res;
+}
+
+int TimeBloomFilter::origin_query(int x){
+    vector<int> hash=get_hash(x);
+    int sz=hash.size();
+    int ans=0;
+    for(int i=0;i<sz;i++){
+        ans=max(ans,B[ hash[i] ].get_cnt());
+    }
+    return ans;
 }
 
 void TimeBloomFilter::increase(){

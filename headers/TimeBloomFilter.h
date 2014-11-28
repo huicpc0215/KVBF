@@ -69,6 +69,11 @@ class TimeBloomFilter{
     // return : 0-INF how long the number has hashed into
     int query(int x);
 
+    // query a integer how long the number has hashed into using origin Counting Bloom Filter.
+    // parameters: int x( same as above)
+    // return : 0-INF how long the number hash hashed into
+    int origin_query(int x);
+
     // increase every cell by one unit
     // parameters: NULL
     // return : void

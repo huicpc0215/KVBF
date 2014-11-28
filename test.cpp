@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define OBJ_PER_SEC 5
+#define OBJ_PER_SEC 15
 #define SIMULATION_TIME 50
 #define UP_OFFSET 10
 #define EXIST_QUERY_OK 0
@@ -51,11 +51,10 @@ int main(){
         for(it=timeline[i].begin();it!=timeline[i].end();it++){
             TM.insert(*it);
         }
-        printf("enter to continue \n");
-        getchar();
         test_no_exist.clear();
         test_exist.clear();
         int count_test_exist_ok=0;
+        int origin_count_test_exist_ok=0;
         for(int j=0;j<TEST_EXIST_PER_SEC;j++){
             int flag;
             int k=rand()%(i+1);
@@ -65,6 +64,7 @@ int main(){
             //if(i<5)printf("it =%d\n",timeline[k].find(*it)==timeline[k].end());
             int real_answer=min(i-k,INF);
             int BF_answer=TM.query(*it);
+            int origin_BF_answer=TM.origin_query(*it);
             if( real_answer == BF_answer ) flag=EXIST_QUERY_OK;
             else flag=EXIST_QUERY_WRONG;
             switch(flag){
@@ -74,6 +74,17 @@ int main(){
                 case EXIST_QUERY_WRONG:
                     puts("here wrong appears");
                     printf(" BF_answer=%d real_answer =%d\n",BF_answer,real_answer);
+                    break;
+            }
+            if( real_answer == origin_BF_answer ) flag=EXIST_QUERY_OK;
+            else flag=EXIST_QUERY_WRONG;
+            switch( flag ){
+                case EXIST_QUERY_OK:
+                    origin_count_test_exist_ok++;
+                    break;
+                case EXIST_QUERY_WRONG:
+                    puts("origin here wrong appears");
+                    printf(" orgin_BF_answer=%d real_answer =%d\n",origin_BF_answer,real_answer);
                     break;
             }
         }
@@ -107,9 +118,12 @@ int main(){
             }
         }
         printf("round %d -> test %d exist : %d ok , %d wrong \n",i,TEST_EXIST_PER_SEC,count_test_exist_ok,TEST_EXIST_PER_SEC-count_test_exist_ok);
+        printf("round %d -> test %d exist : origin -> %d ok , %d wrong \n",i,TEST_EXIST_PER_SEC,origin_count_test_exist_ok,TEST_EXIST_PER_SEC-origin_count_test_exist_ok);
         printf("round %d -> test %d no exist : %d ok , %d wrong \n",i,TEST_NO_EXIST_PER_SEC,count_test_no_exist_ok,TEST_NO_EXIST_PER_SEC - count_test_no_exist_ok );
         puts("");
         TM.increase();
+        printf("enter to continue \n");
+        getchar();
     }
     return 0;
 }
