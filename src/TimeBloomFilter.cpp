@@ -163,7 +163,7 @@ int TimeBloomFilter::query(int x){
         }
         if( k==NONE_VALUE) has_none_value=true;
     }
-    if( has_none_value ) return NONE_VALUE;
+    if( has_none_value ) return INF;
     int res = INF;
     for(int i=0;i<sz;i++){
         res=min( res,B_second[hash[i]] );
