@@ -13,37 +13,34 @@
 #define NONE_VALUE -1
 #define MIX_VALUE -2
 #define MURMURHASH 1
+#define EASY_HASH 2
 #define INF 10
 using namespace std;
 TimeBloomFilter::TimeBloomFilter(){
     printf("in construction 0");
-    CellNumber=512;
-    for(int i=0;i<CellNumber;i++){
+    Cell_number=32000000;
+    for(int i=0;i<Cell_number;i++)
         B.push_back(BloomFilterCell());
-        B_second.push_back(-1);
-    }
-    hashnumber=3;
+    Hash_number=4;
+    set_hash_type(1);
 }
 
-TimeBloomFilter::TimeBloomFilter(int _cellnumber){
+TimeBloomFilter::TimeBloomFilter(int _Cell_number){
     printf("in construction 1");
-    CellNumber=_cellnumber;
-    for(int i=0;i<CellNumber;i++){
-        B.push_back(BloomFilterCell(INF,-1));
-        B_second.push_back(-1);
-    }
-    hashnumber=4;
+    Cell_number=_Cell_number;
+    for(int i=0;i<Cell_number;i++)
+        B.push_back(BloomFilterCell());
+    Hash_number=4;
+    set_hash_type(1);
 }
-TimeBloomFilter::TimeBloomFilter(int _cellnumber,int _hashnumber){
+TimeBloomFilter::TimeBloomFilter(int _Cell_number,int _Hash_number){
     printf("in construction 2");
-    CellNumber=_cellnumber;
-    for(int i=0;i<CellNumber;i++){
-        B.push_back(BloomFilterCell(INF,-1));
-        B_second.push_back(-1);
-    }
-    hashnumber=_hashnumber;
+    Cell_number=_Cell_number;
+    for(int i=0;i<Cell_number;i++)
+        B.push_back(BloomFilterCell());
+    Hash_number=_Hash_number;
 }
-unsigned int TimeBloomFilter::murmurhash(const void *key,int len,int seed){
+unsigned int TimeBloomFilter::murmur_hash(const void *key,int len,int seed){
     //printf("in mumurhash\n");
     // 'm' and 'r' are mixing constants generated offline.
     // They're not really 'magic', they just happen to work well.
@@ -87,107 +84,62 @@ unsigned int TimeBloomFilter::murmurhash(const void *key,int len,int seed){
     h ^= h >> 15;
     return h;
 }
-vector<int> TimeBloomFilter::get_hash(int x){
+unsigned int TimeBloomFilter::easy_hash(const void *key,int len,int seed){
+    unsigned int h=seed^len;
+    const unsigned char * tmp= (const unsigned char *)key;
+    for(int i=0;i<len;i++){
+        h=h*17+tmp[i];
+    }
+    return h;
+}
+vector<unsigned int> TimeBloomFilter::get_hash(int _Key){
     //printf("in get_hash");
-    vector<int> res;
+    vector<unsigned int> res;
     char tmp[20];
     int len=0;
-    while(x){
-        tmp[len++]=(x%10)+'0';
-        x/=10;
+    while(_Key){
+        tmp[len++]=(_Key%10)+'0';
+        _Key/=10;
     }
     int low_bound=0;
     unsigned int seed=0;
     //printf(" hashtype =%d murmurhash=%d\n",hashtype, MURMURHASH );
-    for(int i=0;i<hashnumber;i++){
-        if( hashtype == MURMURHASH){
-            seed = murmurhash( tmp, len, seed );
-            res.push_back( seed % (CellNumber/hashnumber)+low_bound);
-            low_bound+=CellNumber/hashnumber;
+    for(int i=0;i<Hash_number;i++){
+        if( Hash_type == MURMURHASH){
+            seed = murmur_hash( tmp, len, seed );
+            res.push_back( seed % (Cell_number/Hash_number)+low_bound);
+            low_bound+=Cell_number/Hash_number;
             //printf("res-> %d\n",seed%CellNumber);
         }
+        else if( Hash_type == EASY_HASH ){
+            seed = easy_hash( tmp, len ,seed);
+            res.push_back( seed % (Cell_number/Hash_number)+low_bound);
+            low_bound+=Cell_number/Hash_number;
+        }
     }
     return res;
 }
 
-void TimeBloomFilter::set_hashtype(int x){
-    hashtype=x;
+void TimeBloomFilter::set_hash_type(int _Hash_type){
+    Hash_type=_Hash_type;
 }
 
-void TimeBloomFilter::insert(int x){
+void TimeBloomFilter::insert(int _Key,unsigned char _Value){
     //printf("in insert()");
-    vector<int> hash=get_hash(x);
-    vector<int> Nullcell;
-
+    vector<unsigned int> hash=get_hash(_Key);
     int sz=hash.size();
-    printf("insert = %d\n",x);
-    for(int i=0;i<sz;i++){
-        int k=B[ hash[i] ].check_next();
-        if( k==NONE_VALUE)Nullcell.push_back( hash[i] );
-        else if( k==hash[i] ){
-            B_second[ hash[i] ] = B[ hash[i] ].get_cnt();
-            B[ hash[i] ].set_next(MIX_VALUE,true);
-        }
-        else if( k>=0 && k<CellNumber){
-            int p=hash[i];
-            while(B[ p ].check_next()!=hash[i])p=B[p].check_next();
-            B[ p ].set_next( B[hash[i]].check_next() , false);
-            B[ hash[i] ].set_next(MIX_VALUE,true);
-        }
-        else if( k == MIX_VALUE ){
-            B[ hash[i] ].set_next( MIX_VALUE , true );
-        }
-        printf("hash[%d]=%d\n",i,hash[i]);
-    }
-    sz=Nullcell.size();
-    for(int i=0;i<sz;i++){
-        B[ Nullcell[i] ].set_next(Nullcell[ i==sz-1?0:i+1 ] , true);
-    }
+    //printf("insert = %d\n",_Key);
+    for(int i=0;i<sz;i++)
+        B[ hash[i] ].insert(_Value);
 }
 
-int TimeBloomFilter::query(int x){
+unsigned char TimeBloomFilter::query(int _Key){
     //printf(" in query()");
-    vector<int> hash=get_hash(x);
+    unsigned char res=255;
+    vector<unsigned int> hash=get_hash(_Key);
     int sz=hash.size();
-    bool has_none_value=false;
     for(int i=0;i<sz;i++){
-        int k=B[ hash[i] ].check_next();
-        if( k>=0 && k< CellNumber) {
-            int p=hash[i];
-            bool fg=true;
-            while(k!=p){
-                if(*lower_bound(hash.begin(),hash.end(),k)!=k){
-                    fg=false;
-                    break;
-                }
-                else k=B[k].check_next();
-            }
-            if(fg)return B[ hash[i] ].get_cnt();
-        }
-        if( k==NONE_VALUE) has_none_value=true;
-    }
-    if( has_none_value ) return INF;
-    int res = INF;
-    for(int i=0;i<sz;i++){
-        res=min( res,B_second[hash[i]] );
+        res&=B[ hash[i] ].get();
     }
     return res;
-}
-
-int TimeBloomFilter::origin_query(int x){
-    vector<int> hash=get_hash(x);
-    int sz=hash.size();
-    int ans=0;
-    for(int i=0;i<sz;i++){
-        ans=max(ans,B[ hash[i] ].get_cnt());
-    }
-    return ans;
-}
-
-void TimeBloomFilter::increase(){
-    //printf(" in increase");
-    for(int i=0;i<CellNumber;i++){
-        B[i].increase_cnt();
-        B_second[i]++;
-    }
 }
