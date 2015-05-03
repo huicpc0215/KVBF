@@ -11,3 +11,6 @@
 
 #Tmp cpp file
 *.cpp~
+
+#pcap file
+*.pcap
