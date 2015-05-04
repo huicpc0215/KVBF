@@ -15,3 +15,7 @@ main
 
 #pcap file
 *.pcap
+
+#test case
+*.in
+*.out
