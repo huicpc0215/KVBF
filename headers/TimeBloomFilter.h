@@ -18,60 +18,52 @@ using namespace std;
 
 class TimeBloomFilter{
     private:
-    // Cellnumber BloomfilterCell also
-    // type: BloomfilterCell
-    vector<BloomFilterCell> B;
-    vector<int> B_second;
-
     // cellnumber
     // type: int
-    int CellNumber;
+    int Cell_number;
 
     // hash number
     // type : int
-    int hashnumber;
+    int Hash_number;
 
     // hash type
     // type: int
-    int hashtype;
-
+    int Hash_type;
 
     // murmurhash source code
-    unsigned int murmurhash(const void *key, int len , int seed);
+    unsigned int murmur_hash(const void *key, int len , int seed);
+    unsigned int easy_hash(const void *key,int len,int seed);
 
     public:
-    // insert a integer and set the k position to zero
+    // insert a key value and union the value to the cell
     // parameters: int x ( that want to insert into the TimeBloomFilter)
     // return : void
-    void insert(int x);
+    void insert(int _Key,unsigned char _Value);
+
+    //Cellnumber
+    vector<BloomFilterCell> B;
 
     // k's hash that shows the k distinct number for any Integer
     // parameters: int x ( that to be hashed ) , int k ( hash number )
     // return : hashed position vector
-    vector<int> get_hash(int x);
+    vector<unsigned int> get_hash(int _Key);
 
     //construction function
     TimeBloomFilter();
 
     //construction with Cellnumber's bloomfiltercell
-    TimeBloomFilter(int _cellnumber);
+    TimeBloomFilter(int _Cell_number);
 
     //constuction with Cellnumber and hash number
-    TimeBloomFilter(int _cellnumber,int _hashnumber);
+    TimeBloomFilter(int _Cell_number,int _Hash_number);
 
     // set hash type
     // if x == 1  set the hashtype to mormorhash
-    void set_hashtype(int x);
+    void set_hash_type(int _Hash_type);
 
     // query a integer how long the number has hashed into.
     // parameters: int x( that want to query if the element has hashed into the TimeBloomFilter)
     // return : 0-INF how long the number has hashed into
-    int query(int x);
-
-    // increase every cell by one unit
-    // parameters: NULL
-    // return : void
-    void increase();
-
+    unsigned char query(int _Key);
 };
 #endif
