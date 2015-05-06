@@ -19,7 +19,7 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
             struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
                     sizeof( struct iphdr ) );
             int status=((tcpptr->syn)<<0)|((tcpptr->ack)<<1)|((tcpptr->fin)<<2);
-            of<<inet_ntoa(srcaddr)<<" ";
+            of<<inet_ntoa(srcaddr)<<"_";
             of<<inet_ntoa(desaddr)<<" "<<status<<endl;
         }
         else fprintf(stderr,"now is not tcp protocol\n");
