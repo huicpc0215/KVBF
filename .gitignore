@@ -20,5 +20,8 @@ main
 *.in
 *.out
 
-# executable 
-proceed
+# executable
+main
+
+# build directory
+build
