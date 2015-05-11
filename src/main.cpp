@@ -12,7 +12,7 @@
 
 int main(int argc,char *argv[]){
     if( argc < 2 ){
-        fprintf(stdout,"arguments too few\n");
+        fprintf(stdout,"no input file name\n");
         return 0;
     }
     proceed(argv[1]);
