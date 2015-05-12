@@ -1,24 +1,27 @@
 /*=============================================================================
-#     FileName: kvbf_block.h
-#         Desc: kvbf_block.h
+#     FileName: kvbf.h
+#         Desc: kvbf.h
 #       Author: huicpc0215
 #        Email: huicpc0215@gmail.com
 #     HomePage: http://huicpc0215.uni.me
 #      Version: 0.0.1
-#   LastChange: 2015-05-11 20:48:49
+#   LastChange: 2015-05-12 14:46:11
 #      History:
 =============================================================================*/
+#ifndef DEBUG
+#define DEBUG
+#endif
 
-#ifndef KVBF_BLOCK_H
-#define KVBF_BLOCK_H
-#include "kvbf_cell.h"
-class kvbf_block{
+#ifndef KVBF_H
+#define KVBF_H
+#include "kvbf_block.h"
+class kvbf{
     public:
     // default construction
-    kvbf_block(int _seed);
+    kvbf(size_t hash_num,size_t cell_num_per_block,size_t  layer_num,size_t byte_num);
 
     // destory function
-    ~kvbf_block();
+    ~kvbf();
 
     // get key's value in this block
     // parameters : char *, byte *
@@ -35,21 +38,12 @@ class kvbf_block{
     // return : void
     void del(const char *key,byte* _Value);
 
-    // number of cell;
-    static size_t cl_num;
+    // number of block;
+    size_t bk_num;
 
     private:
     // data storage
-    kvbf_cell **cell;
+    kvbf_block **block;
 
-    // hash seed
-    int seed;
-
-
-    // use the seed and key to generate the position
-    // using murmur_hash
-    // parameters: char *
-    // return :position
-    size_t hash(const char *key);
 };
 #endif

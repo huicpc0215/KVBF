@@ -1,7 +1,8 @@
 ADD_SUBDIRECTORY(proceed)
+ADD_SUBDIRECTORY(kvbf)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 ADD_EXECUTABLE(main main.cpp)
 
-TARGET_LINK_LIBRARIES(main proceed pcap)
+TARGET_LINK_LIBRARIES(main proceed pcap kvbf )

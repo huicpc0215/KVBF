@@ -10,6 +10,7 @@
 =============================================================================*/
 #include<stdlib.h>
 #include<string.h>
+#include<stdio.h>
 #include"kvbf_cell.h"
 
 kvbf_cell::kvbf_cell(){
@@ -20,7 +21,7 @@ kvbf_cell::kvbf_cell(){
 }
 
 kvbf_cell::~kvbf_cell(){
-    for(size_t i=ly_num-1;i>=0;i--){
+    for(size_t i=0;i<ly_num;i++){
         delete(layer[i]);
     }
     free(layer);
@@ -44,11 +45,11 @@ void kvbf_cell::get(byte* answer){
  * write in parallel may be accelarate insertion
  */
 void kvbf_cell::ins(byte* _Value){
-    if(ly_num==1){
-
-    }
-    else if(ly_num==2){
-
+    for(size_t i=0;i<ly_num;i++){
+        for(size_t j=0;j<by_num;j++){
+            *(layer[i]->get()+j) ^= *(_Value+j) ;
+            *(_Value+j) &= *(layer[i]->get()+j) ;
+        }
     }
 }
 
@@ -56,11 +57,11 @@ void kvbf_cell::ins(byte* _Value){
  * write in parallel maybe accelarate deletion
  */
 void kvbf_cell::del(byte* _Value){
-    if(ly_num==1){
-
-    }
-    else if(ly_num==2){
-
+    for(size_t i=0;i<ly_num;i++){
+        for(size_t j=0;j<by_num;j++){
+            *(layer[i]->get()+j) ^= *(_Value+j) ;
+            *(_Value+j) &= ~(*(layer[i]->get()+j));
+        }
     }
 }
 

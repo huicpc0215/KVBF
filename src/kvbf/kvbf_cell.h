@@ -35,15 +35,16 @@ class kvbf_cell{
     // return : void
     void del(byte* _Value);
 
-    private:
-    // data storage
-    kvbf_layer **layer;
-
     // number of layer
     static size_t ly_num;
 
     // number of byte
     static size_t by_num;
+
+    private:
+    // data storage
+    kvbf_layer **layer;
+
 
 };
 #endif

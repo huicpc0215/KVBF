@@ -11,6 +11,7 @@
 
 #ifndef KVBF_LAYER_H
 #define KVBF_LAYER_H
+#include<stdio.h>
 typedef unsigned char byte;
 typedef unsigned int size_t;
 class kvbf_layer{
