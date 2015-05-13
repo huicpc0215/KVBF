@@ -21,6 +21,7 @@ size_t kvbf_cell::ly_num=0;
 size_t kvbf_cell::by_num=0;
 map<string,byte> mp;
 ifstream fi;
+ofstream fo;
 #define hash_default 3
 #define cell_default 32768
 #define layer_default 3
@@ -33,37 +34,33 @@ int layer_num_per_cell_begin=layer_default;
 int layer_num_per_cell_end=layer_default;
 
 int main(int argc,char *argv[]){
-    if( argc < 2 ){
-        fprintf(stdout,"no input file name\n");
+    if( argc < 3 ){
+        fprintf(stdout,"no input file name or change type\n");
         return 0;
     }
     //proceed(argv[1]);
-    int p = -1;
-    do{
-        printf("choose the variety:\n");
-        printf("0. hash_num\n");
-        printf("1. cell_num_per_hash\n");
-        printf("2. layer_num_per_cell\n");
-        scanf("%d",&p);
-    }while( p < 0 || p > 2 );
-    printf("p reads end p=%d \n",p);
+    int p = atoi(argv[2]);
     if( p==0 ){
-        printf("please choose hash_num(default %d) range[,]:\n",hash_num_begin);
+        printf("please choose hash_num(default %d) range[,]:\n",hash_default);
         scanf("%d%d",&hash_num_begin,&hash_num_end);
     }
     else if( p==1 ){
-        printf("please choose cell_num_per_hash(default %d) range[,]:\n",cell_num_per_hash_begin);
+        printf("please choose cell_num_per_hash(default %d) range[,]:\n",cell_default);
         scanf("%d%d",&cell_num_per_hash_begin,&cell_num_per_hash_end);
     }
-    else {
-        printf("please choose layer_num(default %d) range[,]:\n",layer_num_per_cell_begin);
+    else if( p==2 ){
+        printf("please choose layer_num(default %d) range[,]:\n",layer_default);
         scanf("%d%d",&layer_num_per_cell_begin,&layer_num_per_cell_end);
     }
-    printf("read ends\n");
+    else {
+        printf("no %d options\n",p);
+        return 0;
+    }
+    fo.open("result.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_num_per_hash_begin;j<=cell_num_per_hash_end;j*=2){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){
-                printf(" start simulation hash = %d cell = %d layer = %d \n",i,j,k);
+                printf("start simulation hash = %d cell = %d layer = %d \n",i,j,k);
                 if(p==0) printf("hash_num = %d ",i);
                 else if(p==1) printf("cell_num_per_hash = %d ",j);
                 else printf("layer_num_per_cell = %d ",k);
@@ -91,10 +88,13 @@ int main(int argc,char *argv[]){
                     allcnt++;
                 }
                 printf("error rate = %lf \n",(double)wrong_query/(double)allcnt);
+                int variant = (p==0?i:( p==1?j:k ));
+                fo<<variant<<" "<<1.0*wrong_query/allcnt<<endl;
                 fi.close();
                 delete(KVBF);
             }
         }
     }
+    fo.close();
     return 0;
 }
