@@ -30,7 +30,7 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
 
 int proceed(const char *filename){
     of.open("data.in");
-    fprintf(stdout,"pcap file name = %s \n",filename);
+    fprintf(stdout,"now proceeding %s ...\n",filename);
     char str[100];
     char ebuf[PCAP_ERRBUF_SIZE];
     char filter_rgx[]="tcp";
@@ -55,6 +55,7 @@ int proceed(const char *filename){
 
     pcap_loop( handle , -1 , pcap_callback , NULL);
     pcap_close(handle);
+    fprintf(stdout,"proceeding  ends\n");
 
     return 0;
 }

@@ -23,8 +23,8 @@ map<string,byte> mp;
 ifstream fi;
 ofstream fo;
 #define hash_default 3
-#define cell_default 32768
-#define layer_default 3
+#define cell_default 262144
+#define layer_default 4
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
@@ -38,7 +38,6 @@ int main(int argc,char *argv[]){
         fprintf(stdout,"no input file name or change type\n");
         return 0;
     }
-    //proceed(argv[1]);
     int p = atoi(argv[2]);
     if( p==0 ){
         printf("please choose hash_num(default %d) range[,]:\n",hash_default);
@@ -56,6 +55,7 @@ int main(int argc,char *argv[]){
         printf("no %d options\n",p);
         return 0;
     }
+    proceed(argv[1]);
     fo.open("result.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_num_per_hash_begin;j<=cell_num_per_hash_end;j*=2){
@@ -69,21 +69,22 @@ int main(int argc,char *argv[]){
                 fi.open("data.in");
                 mp.clear();
                 string s;
-                byte v;
-                byte ans;
+                byte v,answer,real_answer;
                 int allcnt = 0;
                 int wrong_query = 0;
                 while( fi>>s ){
                     //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
                     fi>>v;
-                    KVBF->get(s.c_str(),&ans);
-                    if( mp[s] != ans ){
+                    KVBF->get(s.c_str(),&answer);
+                    real_answer=mp[s];
+
+                    if( real_answer != answer ){
                         wrong_query++;
                     }
-                    mp[s]=v;
-                    if( ans != 0 ){
-                        KVBF->del(s.c_str(),&ans);
+                    if( answer != 0 ){
+                        KVBF->del(s.c_str(),&answer);
                     }
+                    mp[s]=v;
                     KVBF->ins(s.c_str(),&v);
                     allcnt++;
                 }

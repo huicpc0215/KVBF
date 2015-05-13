@@ -9,7 +9,7 @@ cd ../data
 filecnt=0
 echo "select the file you want to simulation :"
 
-for file in `ls | grep .*\.pcap`
+for file in `ls | grep .*\.dump`
 do
     echo "${filecnt}. ${file}"
     filecnt=`expr $filecnt + 1`
