@@ -24,13 +24,13 @@ map<string,byte> mp;
 ifstream fi;
 ofstream fo;
 #define hash_default 3
-#define cell_default 5242880
-#define layer_default 3
+#define cell_default 40960
+#define layer_default 4
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
-int cell_num_per_hash_begin=cell_default;
-int cell_num_per_hash_end=cell_default;
+int cell_num_begin=cell_default;
+int cell_num_end=cell_default;
 int layer_num_per_cell_begin=layer_default;
 int layer_num_per_cell_end=layer_default;
 
@@ -46,7 +46,7 @@ int main(int argc,char *argv[]){
     }
     else if( p==1 ){
         printf("please choose cell_num_per_hash(default %d) range[,]:\n",cell_default);
-        scanf("%d%d",&cell_num_per_hash_begin,&cell_num_per_hash_end);
+        scanf("%d%d",&cell_num_begin,&cell_num_end);
     }
     else if( p==2 ){
         printf("please choose layer_num(default %d) range[,]:\n",layer_default);
@@ -60,7 +60,7 @@ int main(int argc,char *argv[]){
     fo.open("result.out");
     srand(time(NULL));
     for(int i=hash_num_begin;i<=hash_num_end;i++){
-        for(int j=cell_num_per_hash_begin;j<=cell_num_per_hash_end;j*=2){
+        for(int j=cell_num_begin;j<=cell_num_end;j+=cell_default){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){
                 printf("start simulation hash = %d cell = %d layer = %d \n",i,j,k);
                 if(p==0) printf("hash_num = %d ",i);
@@ -83,11 +83,14 @@ int main(int argc,char *argv[]){
                     if( real_answer != answer ){
                         wrong_query++;
                     }
-                    if( answer != 0 ){
-                        KVBF->del(s.c_str(),&answer);
+                    if( answer!= 0 ){
+                        KVBF->del( s.c_str(),&answer );
                     }
-                    mp[s]=v;
-                    KVBF->ins(s.c_str(),&v);
+                    if( v <= 4 ){
+                        mp[s]=v;
+                        KVBF->ins(s.c_str(),&v);
+                    }
+                    else mp[s]=0;
                     allcnt++;
                 }
                 printf("error rate = %lf \n",(double)wrong_query/(double)allcnt);

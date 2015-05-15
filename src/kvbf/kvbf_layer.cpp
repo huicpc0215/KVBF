@@ -10,9 +10,11 @@
 =============================================================================*/
 #include<stdlib.h>
 #include"kvbf_layer.h"
+#include<string.h>
 
 kvbf_layer::kvbf_layer(size_t b=1){
     Value = (byte*)malloc(b*sizeof(byte));
+    memset(Value,0,b);
 }
 
 kvbf_layer::~kvbf_layer(){

@@ -1,6 +1,9 @@
 #include "proceed.h"
+#include <set>
 
 ofstream of;
+set<int> st;
+set<int>::iterator it;
 
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
@@ -18,9 +21,10 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
         if( ipptr->protocol==IPPROTO_TCP ){
             struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
                     sizeof( struct iphdr ) );
-            int status=((tcpptr->syn)<<0)|((tcpptr->ack)<<1)|((tcpptr->fin)<<2);
+            int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->fin))<<2);
             of<<inet_ntoa(srcaddr)<<"_";
-            of<<inet_ntoa(desaddr)<<" "<<status<<endl;
+            of<<inet_ntoa(desaddr)<<" "<<((1<<status))<<endl;
+            st.insert(status);
         }
         else fprintf(stderr,"now is not tcp protocol\n");
     }
@@ -55,6 +59,9 @@ int proceed(const char *filename){
 
     pcap_loop( handle , -1 , pcap_callback , NULL);
     pcap_close(handle);
+    for(it=st.begin();it!=st.end();it++){
+        fprintf(stdout,"status have %d\n",*it);
+    }
     fprintf(stdout,"proceeding  ends\n");
 
     return 0;

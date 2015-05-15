@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -rf build/
+#rm -rf build/
 mkdir build
 cd build/
 cmake ..
@@ -13,7 +13,7 @@ for file in `ls | grep .*\.dump`
 do
     echo "${filecnt}. ${file}"
     filecnt=`expr $filecnt + 1`
-    files=($files $file)
+    files=(${files[*]} $file)
 done
 
 read filenum
@@ -22,14 +22,14 @@ echo "you select ${filenum}. ${filename}"
 
 echo "select the variant :"
 echo "0. number of hash"
-echo "1. number of cell per hash"
+echo "1. number of cell"
 echo "2. number of layer per cell"
 read p
 
 if [ $p -eq 0 ] ; then
     xlabel="hash number"
 elif [ $p -eq 1 ] ; then
-    xlabel="cell number per hash"
+    xlabel="cell number"
 elif [ $p -eq 2 ] ; then
     xlabel="layer per cell"
 fi
