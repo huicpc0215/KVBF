@@ -44,6 +44,7 @@ class kvbf{
     private:
     //tmp_value
     byte *tmp_value;
+
     // data storage
     kvbf_block **block;
 

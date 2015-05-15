@@ -15,16 +15,17 @@
 #include<iostream>
 #include<fstream>
 #include<map>
+#include<time.h>
 typedef unsigned char byte;
-size_t kvbf_block::cl_num=0;
+//size_t kvbf_block::cl_num=0;
 size_t kvbf_cell::ly_num=0;
 size_t kvbf_cell::by_num=0;
 map<string,byte> mp;
 ifstream fi;
 ofstream fo;
 #define hash_default 3
-#define cell_default 262144
-#define layer_default 4
+#define cell_default 5242880
+#define layer_default 3
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
@@ -57,6 +58,7 @@ int main(int argc,char *argv[]){
     }
     proceed(argv[1]);
     fo.open("result.out");
+    srand(time(NULL));
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_num_per_hash_begin;j<=cell_num_per_hash_end;j*=2){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){

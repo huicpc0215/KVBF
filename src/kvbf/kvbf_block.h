@@ -15,7 +15,7 @@
 class kvbf_block{
     public:
     // default construction
-    kvbf_block(int _seed);
+    kvbf_block(int _seed,int _cl_num);
 
     // destory function
     ~kvbf_block();
@@ -36,7 +36,7 @@ class kvbf_block{
     void del(const char *key,byte* _Value);
 
     // number of cell;
-    static size_t cl_num;
+    size_t cl_num;
 
     private:
     // data storage

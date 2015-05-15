@@ -15,10 +15,11 @@ kvbf_layer::kvbf_layer(size_t b=1){
     Value = (byte*)malloc(b*sizeof(byte));
 }
 
+kvbf_layer::~kvbf_layer(){
+    free(Value);
+}
+
 byte* kvbf_layer::get(){
     return Value;
 }
 
-kvbf_layer::~kvbf_layer(){
-    free(Value);
-}

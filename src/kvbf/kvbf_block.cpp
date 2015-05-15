@@ -8,17 +8,20 @@
 #   LastChange: 2015-05-12 14:42:41
 #      History:
 =============================================================================*/
+
 #include"kvbf_block.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
-kvbf_block::kvbf_block(int _seed=0){
+kvbf_block::kvbf_block(int _seed=0,int _cl_num=1024){
     seed = _seed;
+    cl_num = _cl_num;
     cell = (kvbf_cell **)malloc(cl_num*sizeof(kvbf_cell*));
     for(size_t i=0;i<cl_num;i++){
         cell[i]=new kvbf_cell();
     }
+    printf("\ngive cell=%u\n",cl_num);
 }
 
 kvbf_block::~kvbf_block(){

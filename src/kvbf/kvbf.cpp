@@ -12,13 +12,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-kvbf::kvbf(size_t hash_num=3,size_t cell_num_per_block=1024,size_t layer_num=2,size_t byte_num=1){
+kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte_num=1){
     bk_num = hash_num;
-    kvbf_block::cl_num = cell_num_per_block;
+    //kvbf_block::cl_num = cell_num_per_block;
     kvbf_cell::ly_num = layer_num;
     kvbf_cell::by_num = byte_num;
     int *seed;
     int tmp;
+    int nowsize=cell_num/hash_num,remain=cell_num;
     seed = (int *)malloc( bk_num * sizeof( int ) );
     block = (kvbf_block **) malloc ( bk_num * sizeof( kvbf_block*) );
     for(size_t i=0;i<bk_num;i++){
@@ -34,9 +35,11 @@ kvbf::kvbf(size_t hash_num=3,size_t cell_num_per_block=1024,size_t layer_num=2,s
             }
         }while(same_seed);
         seed[i]=tmp;
-        block[i]=new kvbf_block(tmp);
+        block[i]=new kvbf_block(tmp,(i==bk_num-1?remain:nowsize));
+        remain-=nowsize;
     }
     tmp_value=(byte*)malloc(byte_num * sizeof(byte) );
+    free(seed);
 }
 kvbf::~kvbf(){
     free(tmp_value);
@@ -48,8 +51,6 @@ kvbf::~kvbf(){
 
 void kvbf::get(const char *key,byte* answer){
     memset(answer,0xFF,kvbf_cell::by_num);
-    //byte * tmp;
-    //tmp = (byte *)malloc( kvbf_cell::by_num * sizeof(byte) );
     for(size_t i=0;i<bk_num;i++){
         block[i]->get(key,tmp_value);
         for(size_t j=0;j<kvbf_cell::by_num;j++){
@@ -59,8 +60,6 @@ void kvbf::get(const char *key,byte* answer){
 }
 
 void kvbf::ins(const char *key,byte* _Value){
-    //byte * tmp;
-    //tmp = (byte *) malloc ( kvbf_cell::by_num*sizeof(byte) );
     for(size_t i=0;i<bk_num;i++){
         memcpy( tmp_value , _Value, kvbf_cell::by_num );
         block[i]->ins(key,tmp_value);
@@ -68,8 +67,6 @@ void kvbf::ins(const char *key,byte* _Value){
 }
 
 void kvbf::del(const char *key,byte* _Value){
-    //byte * tmp;
-    //tmp = (byte* )malloc ( kvbf_cell::by_num*sizeof(byte) );
     for(size_t i=0;i<bk_num;i++){
         memcpy( tmp_value, _Value , kvbf_cell::by_num );
         block[i]->del(key,tmp_value);
