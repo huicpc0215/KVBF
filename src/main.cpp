@@ -21,10 +21,13 @@ typedef unsigned char byte;
 size_t kvbf_cell::ly_num=0;
 size_t kvbf_cell::by_num=0;
 map<string,byte> mp;
+map<int,int> vmp;
+map<int,int>::iterator it;
+int mxsize;
 ifstream fi;
 ofstream fo;
-#define hash_default 3
-#define cell_default 40960
+#define hash_default 4
+#define cell_default 80640
 #define layer_default 4
 
 int hash_num_begin=hash_default;
@@ -45,7 +48,7 @@ int main(int argc,char *argv[]){
         scanf("%d%d",&hash_num_begin,&hash_num_end);
     }
     else if( p==1 ){
-        printf("please choose cell_num_per_hash(default %d) range[,]:\n",cell_default);
+        printf("please choose cell_num(default %d) range[,]:\n",cell_default);
         scanf("%d%d",&cell_num_begin,&cell_num_end);
     }
     else if( p==2 ){
@@ -62,21 +65,29 @@ int main(int argc,char *argv[]){
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_num_begin;j<=cell_num_end;j+=cell_default){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){
+                mxsize=0;
+                vmp.clear();
                 printf("start simulation hash = %d cell = %d layer = %d \n",i,j,k);
                 if(p==0) printf("hash_num = %d ",i);
                 else if(p==1) printf("cell_num_per_hash = %d ",j);
                 else printf("layer_num_per_cell = %d ",k);
                 kvbf* KVBF;
-                KVBF = new kvbf(i,j,k,1);
+                KVBF = new kvbf(i,j/k,k,1);
                 fi.open("data.in");
                 mp.clear();
                 string s;
-                byte v,answer,real_answer;
+                char ch[10];
+                byte answer,real_answer,bytev;
+                int v;
                 int allcnt = 0;
                 int wrong_query = 0;
                 while( fi>>s ){
                     //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
                     fi>>v;
+                    bytev =(byte)v;
+                    //cout<<s<<" "<<v<<endl;
+                    //scanf("%s",ch);
+                    vmp[bytev]++;
                     KVBF->get(s.c_str(),&answer);
                     real_answer=mp[s];
 
@@ -86,11 +97,12 @@ int main(int argc,char *argv[]){
                     if( answer!= 0 ){
                         KVBF->del( s.c_str(),&answer );
                     }
-                    if( v <= 4 ){
-                        mp[s]=v;
-                        KVBF->ins(s.c_str(),&v);
+                    if( v < 16 ){
+                        mp[s]=bytev;
+                        KVBF->ins(s.c_str(),&bytev);
                     }
-                    else mp[s]=0;
+                    else mp.erase( mp.find(s) );
+                    mxsize= max( mxsize , (int)mp.size() );
                     allcnt++;
                 }
                 printf("error rate = %lf \n",(double)wrong_query/(double)allcnt);
@@ -98,6 +110,10 @@ int main(int argc,char *argv[]){
                 fo<<variant<<" "<<1.0*wrong_query/allcnt<<endl;
                 fi.close();
                 delete(KVBF);
+                for(it=vmp.begin();it!=vmp.end();it++){
+                    printf("value -> %d  count = %d\n",it->first,it->second);
+                }
+                printf("max size = %d\n",mxsize);
             }
         }
     }

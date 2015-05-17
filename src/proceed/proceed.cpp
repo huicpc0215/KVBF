@@ -4,7 +4,7 @@
 ofstream of;
 set<int> st;
 set<int>::iterator it;
-
+int tms[10];
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
@@ -24,17 +24,18 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
             int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->fin))<<2);
             of<<inet_ntoa(srcaddr)<<"_";
             of<<inet_ntoa(desaddr)<<" "<<((1<<status))<<endl;
-            st.insert(status);
+            st.insert(1<<status);
+            tms[status]++;
         }
         else fprintf(stderr,"now is not tcp protocol\n");
     }
     else fprintf(stderr , "Now is not IP\n");
-    //scanf("%s",ts);
 }
 
 int proceed(const char *filename){
     of.open("data.in");
     fprintf(stdout,"now proceeding %s ...\n",filename);
+    for(int i=0;i<10;i++)tms[i]=0;
     char str[100];
     char ebuf[PCAP_ERRBUF_SIZE];
     char filter_rgx[]="tcp";
@@ -60,7 +61,7 @@ int proceed(const char *filename){
     pcap_loop( handle , -1 , pcap_callback , NULL);
     pcap_close(handle);
     for(it=st.begin();it!=st.end();it++){
-        fprintf(stdout,"status have %d\n",*it);
+        fprintf(stdout,"status have %d times=%d\n",*it,tms[*it]);
     }
     fprintf(stdout,"proceeding  ends\n");
 
