@@ -1,10 +1,11 @@
 #include "proceed.h"
 #include <set>
+#include <map>
 
 ofstream of;
 set<int> st;
 set<int>::iterator it;
-int tms[10];
+map<int,int> tms;
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
@@ -25,7 +26,7 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
             of<<inet_ntoa(srcaddr)<<"_";
             of<<inet_ntoa(desaddr)<<" "<<((1<<status))<<endl;
             st.insert(1<<status);
-            tms[status]++;
+            tms[1<<status]++;
         }
         else fprintf(stderr,"now is not tcp protocol\n");
     }

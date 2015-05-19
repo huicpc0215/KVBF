@@ -1,5 +1,5 @@
 set term pdfcairo lw 2 font "Times New Roman,8"
 set output "result.pdf"
-set xlabel "layer per cell"
+set xlabel "hash number"
 set ylabel "error rate"
 plot "result.out" using 1:2 w lp lc 2 lw 2 pt 19 ps 1 title "kvbf"

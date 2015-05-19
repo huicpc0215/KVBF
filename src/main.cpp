@@ -27,8 +27,8 @@ int mxsize;
 ifstream fi;
 ofstream fo;
 #define hash_default 4
-#define cell_default 80640
-#define layer_default 4
+#define cell_default 181440
+#define layer_default 3
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
@@ -101,7 +101,7 @@ int main(int argc,char *argv[]){
                         mp[s]=bytev;
                         KVBF->ins(s.c_str(),&bytev);
                     }
-                    else mp.erase( mp.find(s) );
+                    else mp[s]=0;
                     mxsize= max( mxsize , (int)mp.size() );
                     allcnt++;
                 }
