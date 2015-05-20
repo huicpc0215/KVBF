@@ -42,7 +42,7 @@ echo "set term pdfcairo lw 2 font \"Times New Roman,8\"">../src/script/plotgraph
 echo "set output \"result.pdf\"">>../src/script/plotgraph.plt
 echo "set xlabel \"${xlabel}\"">>../src/script/plotgraph.plt
 echo "set ylabel \"error rate\"">>../src/script/plotgraph.plt
-echo "plot \"result.out\" using 1:2 w lp lc 2 lw 2 pt 19 ps 1 title \"kvbf\"">>../src/script/plotgraph.plt
+echo "plot \"result.out\" u 1:2 w lp lc 2 lw 2 pt 19 ps 1 title \"kvbf\", \"result.out\" u 1:3 w lp lc 3 lw 2 pt 18 ps 1 title \"sbf\"">>../src/script/plotgraph.plt
 gnuplot ../src/script/plotgraph.plt
 
 evince result.pdf

@@ -11,15 +11,18 @@
 #include"sbf.h"
 #include<string.h>
 #include<stdlib.h>
+#include<stdio.h>
 
 #define DK 0xFF
 
-sbf::sbf(size_t hash_num=3,size_t totol_size=1024){
+sbf::sbf(size_t _hash_num=3,size_t totol_size=1024){
+    printf("construction with %d cells!",totol_size/2);
     cell = (byte *) malloc(totol_size/2);
-    memset(cell, 0, totol_size/2);
+    memset( cell, 0, totol_size/2);
     count = (byte *)malloc(totol_size/2);
     memset( count , 0 , totol_size/2);
-    m = totol_size;
+    m = totol_size/2;
+    hash_num = _hash_num;
 }
 
 sbf::~sbf(){
@@ -42,7 +45,7 @@ void sbf::get(const char * key, byte * answer){
                 *answer = cell[ now + tmp];
             }
         }
-        now += each_cell;
+        now+=each_cell;
     }
 }
 
@@ -51,10 +54,10 @@ void sbf::ins(const char *key,byte * _Value){
     size_t tmp=0,now=0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
-        if( count[now+tmp] == 0 ){
-            count[now+tmp]=1;
+        if( count[now+tmp] == 0x00 ){
+            count[now+tmp]=0x01;
             //memcpy( (char *)&cell[i], (const char *)_Value, 1 );
-            cell[i]=*_Value;
+            cell[now+tmp]=*_Value;
         }
         else if( cell[now+tmp] == DK ){
             count[now+tmp]++;
@@ -66,7 +69,7 @@ void sbf::ins(const char *key,byte * _Value){
             count[now+tmp]++;
             cell[now+tmp]=DK;
         }
-        now +=each_cell;
+        now+=each_cell;
     }
 }
 
@@ -77,7 +80,22 @@ void sbf::del(const char *key, byte* _Value){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp] == 1 ) cell[ now+tmp] = 0 ;
         if( count[now+tmp] > 0 ) count[now+tmp]--;
-        now +=each_cell;
+        now+=each_cell;
+    }
+}
+
+void sbf::mdf(const char *key,byte* newValue){
+    size_t each_cell = m / hash_num;
+    size_t tmp=0,now=0;
+    for(int i=0;i<hash_num;i++){
+        tmp = get_hash(key,tmp)%each_cell;
+        if(cell[now+tmp]!=DK){
+            if(count[now+tmp] == 1){
+                cell[now+tmp] = *newValue;
+            }
+            else cell[now+tmp] = DK;
+        }
+        now+=each_cell;
     }
 }
 

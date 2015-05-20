@@ -35,6 +35,11 @@ class kvbf{
     // return : void
     void del(const char *key,byte* _Value);
 
+    // modefy the key to new value
+    // parameters : char *, byte *
+    // return : void
+    void mdf(const char *key,byte* newValue);
+
     // number of block;
     size_t bk_num;
 

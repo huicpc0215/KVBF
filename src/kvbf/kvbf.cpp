@@ -72,3 +72,12 @@ void kvbf::del(const char *key,byte* _Value){
         block[i]->del(key,tmp_value);
     }
 }
+
+void kvbf::mdf(const char *key,byte* newValue){
+    byte * oldValue;
+    oldValue = ( byte* ) malloc( kvbf_cell::by_num );
+    get(key,oldValue);
+    del(key,oldValue);
+    ins(key,newValue);
+    free(oldValue);
+}

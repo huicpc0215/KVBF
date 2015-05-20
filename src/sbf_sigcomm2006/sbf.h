@@ -39,6 +39,11 @@ class sbf{
     // return void
     void del(const char *key,byte* _Value);
 
+    // modefy the key
+    // parameters : char *, byte*
+    // return void
+    void mdf(const char *key,byte* newValue);
+
     size_t m;
 
     private:
