@@ -28,7 +28,7 @@ int mxsize;
 ifstream fi;
 ofstream fo;
 #define hash_default 4
-#define cell_default 90720
+#define cell_default 45360
 #define layer_default 3
 
 int hash_num_begin=hash_default;
@@ -74,7 +74,7 @@ int main(int argc,char *argv[]){
                 else printf("layer_num_per_cell = %d ",k);
                 kvbf* KVBF;
                 sbf* SBF;
-                KVBF = new kvbf(i,j/k,k,1);
+                KVBF = new kvbf(i,j,k,1);
                 SBF = new sbf(i,j);
                 fi.open("data.in");
                 mp.clear();

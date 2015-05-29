@@ -17,6 +17,7 @@ kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte
     //kvbf_block::cl_num = cell_num_per_block;
     kvbf_cell::ly_num = layer_num;
     kvbf_cell::by_num = byte_num;
+    cell_num/=layer_num;
     int *seed;
     int tmp;
     int nowsize=cell_num/hash_num,remain=cell_num;

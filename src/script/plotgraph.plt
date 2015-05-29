@@ -1,4 +1,4 @@
-set term pdfcairo lw 2 font "Times New Roman,8"
+set term pdfcairo lw 2 font "Times New Roman,16"
 set output "result.pdf"
 set xlabel "hash number"
 set ylabel "error rate"
