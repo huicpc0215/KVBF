@@ -15,12 +15,12 @@
 
 #define DK 0xFF
 
-sbf::sbf(size_t _hash_num=3,size_t totol_size=1024){
+sbf::sbf(size_t _hash_num=3,size_t totol_size=65536){
     printf("construction with %d cells!",totol_size/2);
     cell = (byte *) malloc(totol_size/2);
-    memset( cell, 0, totol_size/2);
+    memset( cell, 0, sizeof(cell) );
     count = (byte *)malloc(totol_size/2);
-    memset( count , 0 , totol_size/2);
+    memset( count , 0 , sizeof(count) );
     m = totol_size/2;
     hash_num = _hash_num;
 }

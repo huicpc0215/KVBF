@@ -1,9 +1,10 @@
 ADD_SUBDIRECTORY(proceed)
 ADD_SUBDIRECTORY(kvbf)
 ADD_SUBDIRECTORY(sbf_sigcomm2006)
+ADD_SUBDIRECTORY(kbf_infocom2014)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 ADD_EXECUTABLE(main main.cpp)
 
-TARGET_LINK_LIBRARIES(main proceed pcap kvbf sbf)
+TARGET_LINK_LIBRARIES(main proceed pcap kvbf sbf kbf)

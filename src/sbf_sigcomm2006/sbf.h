@@ -12,7 +12,6 @@
 #ifndef SBF_H
 #define SBF_H
 
-
 typedef unsigned char byte;
 typedef unsigned int size_t;
 
@@ -32,14 +31,14 @@ class sbf{
     // insert the key
     // parameters : char *, byte *
     // return : void
-    void ins(const char * , byte* _Value);
+    void ins(const char *key,byte* _Value);
 
     // delete the key
     // parameters : char *, byte*
     // return void
     void del(const char *key,byte* _Value);
 
-    // modefy the key
+    // modify the key
     // parameters : char *, byte*
     // return void
     void mdf(const char *key,byte* newValue);
