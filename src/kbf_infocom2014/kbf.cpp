@@ -71,7 +71,7 @@ void kbf::del(const char *key,byte* _Value){
             count[now+tmp]--;
             cell[now+tmp]^=*_Value;
         }
-        else printf(" there is an error in kbf delete!\n");
+        //else printf(" there is an error in kbf delete!\n");
     }
 }
 

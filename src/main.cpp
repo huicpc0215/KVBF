@@ -10,7 +10,8 @@
 =============================================================================*/
 #include "proceed/proceed.h"
 #include "kvbf/kvbf.h"
-#include "./sbf_sigcomm2006/sbf.h"
+#include "sbf_sigcomm2006/sbf.h"
+#include "kbf_infocom2014/kbf.h"
 #include<string.h>
 #include<cstring>
 #include<iostream>
@@ -74,16 +75,18 @@ int main(int argc,char *argv[]){
                 else printf("layer_num_per_cell = %d ",k);
                 kvbf* KVBF;
                 sbf* SBF;
+                kbf* KBF;
                 KVBF = new kvbf(i,j,k,1);
                 SBF = new sbf(i,j);
+                KBF = new kbf(i,j);
                 fi.open("data.in");
                 mp.clear();
                 string s;
                 char ch[10];
-                byte answer,real_answer,bytev,sbf_answer;
+                byte answer,real_answer,bytev,sbf_answer,kbf_answer;
                 int v;
                 int allcnt = 0;
-                int wrong_query = 0,sbf_wrong_query = 0;
+                int wrong_query = 0,sbf_wrong_query = 0,kbf_wrong_query = 0;
                 while( fi>>s ){
                     //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
                     fi>>v;
@@ -93,6 +96,7 @@ int main(int argc,char *argv[]){
                     vmp[bytev]++;
                     KVBF->get(s.c_str(),&answer);
                     SBF->get(s.c_str(),&sbf_answer);
+                    KBF->get(s.c_str(),&kbf_answer);
                     real_answer=mp[s];
 
                     if( real_answer != answer ){
@@ -101,32 +105,34 @@ int main(int argc,char *argv[]){
                     if( real_answer != sbf_answer ){
                         sbf_wrong_query++;
                     }
-
-                    //if( answer!= 0 ){
-                    //    KVBF->del( s.c_str(),&answer );
-                    //}
+                    if( real_answer != kbf_answer ){
+                        kbf_wrong_query++;
+                    }
 
                     if( v < 16 ){
                         mp[s]=bytev;
-                        //KVBF->ins(s.c_str(),&bytev);
                         if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
-                        else SBF->mdf(s.c_str(),&bytev);
+                        else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
+                        if(kbf_answer==0)KBF->ins(s.c_str(),&bytev);
+                        else if(kbf_answer!=0xFF)KBF->mdf(s.c_str(),&bytev);
                         KVBF->mdf(s.c_str(),&bytev);
                     }
                     else {
                         mp[s]=0;
                         KVBF->del( s.c_str(),&answer);
-                        SBF->del( s.c_str(),&sbf_answer);
+                        if(sbf_answer!=0 && sbf_answer!=0xFF)SBF->del( s.c_str(),&sbf_answer);
+                        if(kbf_answer!=0 && kbf_answer!=0xFF)KBF->del( s.c_str(),&kbf_answer);
                     }
                     mxsize= max( mxsize , (int)mp.size() );
                     allcnt++;
                 }
-                printf("error rate = %lf sbf error rate = %lf \n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt);
+                printf("error rate = %lf sbf error rate = %lf kbf error rate = %lf\n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt,1.0*kbf_wrong_query/allcnt);
                 int variant = (p==0?i:( p==1?j:k ));
-                fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<endl;
+                fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<" "<<1.0*kbf_wrong_query/allcnt<<endl;
                 fi.close();
                 delete(KVBF);
                 delete(SBF);
+                delete(KBF);
                 for(it=vmp.begin();it!=vmp.end();it++){
                     printf("value -> %d  count = %d\n",it->first,it->second);
                 }
