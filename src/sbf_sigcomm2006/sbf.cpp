@@ -17,12 +17,17 @@
 
 sbf::sbf(size_t _hash_num=3,size_t totol_size=65536){
     printf("construction with %d cells!",totol_size/2);
+
     cell = (byte *) malloc(totol_size/2);
     memset( cell, 0, sizeof(cell) );
+
     count = (byte *)malloc(totol_size/2);
     memset( count , 0 , sizeof(count) );
+
     m = totol_size/2;
     hash_num = _hash_num;
+
+    init_seed=rand()%(m/hash_num);
 }
 
 sbf::~sbf(){
@@ -32,7 +37,7 @@ sbf::~sbf(){
 
 void sbf::get(const char * key, byte * answer){
     size_t each_cell = m/hash_num;
-    size_t tmp=0,now=0;
+    size_t tmp=init_seed,now=0;
     *answer = DK;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
@@ -51,7 +56,7 @@ void sbf::get(const char * key, byte * answer){
 
 void sbf::ins(const char *key,byte * _Value){
     size_t each_cell = m / hash_num;
-    size_t tmp=0,now=0;
+    size_t tmp=init_seed,now=0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp] == 0x00 ){
@@ -75,7 +80,7 @@ void sbf::ins(const char *key,byte * _Value){
 
 void sbf::del(const char *key, byte* _Value){
     size_t each_cell = m / hash_num;
-    size_t tmp=0,now=0;
+    size_t tmp=init_seed,now=0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp] == 1 ) cell[ now+tmp] = 0 ;
@@ -86,7 +91,7 @@ void sbf::del(const char *key, byte* _Value){
 
 void sbf::mdf(const char *key,byte* newValue){
     size_t each_cell = m / hash_num;
-    size_t tmp=0,now=0;
+    size_t tmp=init_seed,now=0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if(cell[now+tmp]!=DK){

@@ -59,6 +59,8 @@ class sbf{
     byte *count;
 
     size_t hash_num;
+
+    int init_seed;
 };
 
 #endif

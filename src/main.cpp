@@ -28,9 +28,10 @@ map<int,int>::iterator it;
 int mxsize;
 ifstream fi;
 ofstream fo;
-#define hash_default 4
-#define cell_default 45360
+#define hash_default 3
+#define cell_default 90720
 #define layer_default 3
+#define tms_default 2
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
@@ -73,69 +74,72 @@ int main(int argc,char *argv[]){
                 if(p==0) printf("hash_num = %d ",i);
                 else if(p==1) printf("cell_num_per_hash = %d ",j);
                 else printf("layer_num_per_cell = %d ",k);
-                kvbf* KVBF;
-                sbf* SBF;
-                kbf* KBF;
-                KVBF = new kvbf(i,j,k,1);
-                SBF = new sbf(i,j);
-                KBF = new kbf(i,j);
-                fi.open("data.in");
-                mp.clear();
-                string s;
-                char ch[10];
-                byte answer,real_answer,bytev,sbf_answer,kbf_answer;
-                int v;
-                int allcnt = 0;
+                int variant = (p==0?i:( p==1?j:k ));
                 int wrong_query = 0,sbf_wrong_query = 0,kbf_wrong_query = 0;
-                while( fi>>s ){
-                    //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
-                    fi>>v;
-                    bytev =(byte)v;
-                    //cout<<s<<" "<<v<<endl;
-                    //scanf("%s",ch);
-                    vmp[bytev]++;
-                    KVBF->get(s.c_str(),&answer);
-                    SBF->get(s.c_str(),&sbf_answer);
-                    KBF->get(s.c_str(),&kbf_answer);
-                    real_answer=mp[s];
+                int allcnt = 0;
+                for(int tms = 0 ; tms<tms_default;tms++){
+                    kvbf* KVBF;
+                    sbf* SBF;
+                    kbf* KBF;
+                    int bestK =(int) ( 0.6931 * j / 90000);
+                    KVBF = new kvbf(i,j,k,1);
+                    SBF = new sbf(bestK,j);
+                    KBF = new kbf(bestK,j);
+                    fi.open("data.in");
+                    mp.clear();
+                    string s;
+                    char ch[10];
+                    byte answer,real_answer,bytev,sbf_answer,kbf_answer;
+                    int v;
+                    while( fi>>s ){
+                        //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
+                        fi>>v;
+                        bytev =(byte)v;
+                        //cout<<s<<" "<<v<<endl;
+                        //scanf("%s",ch);
+                        vmp[bytev]++;
+                        KVBF->get(s.c_str(),&answer);
+                        SBF->get(s.c_str(),&sbf_answer);
+                        KBF->get(s.c_str(),&kbf_answer);
+                        real_answer=mp[s];
 
-                    if( real_answer != answer ){
-                        wrong_query++;
-                    }
-                    if( real_answer != sbf_answer ){
-                        sbf_wrong_query++;
-                    }
-                    if( real_answer != kbf_answer ){
-                        kbf_wrong_query++;
-                    }
+                        if( real_answer != answer ){
+                            wrong_query++;
+                        }
+                        if( real_answer != sbf_answer ){
+                            sbf_wrong_query++;
+                        }
+                        if( real_answer != kbf_answer ){
+                            kbf_wrong_query++;
+                        }
 
-                    if( v < 16 ){
-                        mp[s]=bytev;
-                        if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
-                        else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
-                        if(kbf_answer==0)KBF->ins(s.c_str(),&bytev);
-                        else if(kbf_answer!=0xFF)KBF->mdf(s.c_str(),&bytev);
-                        KVBF->mdf(s.c_str(),&bytev);
+                        if( v < 16 ){
+                            mp[s]=bytev;
+                            if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
+                            else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
+                            if(kbf_answer==0)KBF->ins(s.c_str(),&bytev);
+                            else if(kbf_answer!=0xFF)KBF->mdf(s.c_str(),&bytev);
+                            KVBF->mdf(s.c_str(),&bytev);
+                        }
+                        else {
+                            mp[s]=0;
+                            KVBF->del( s.c_str(),&answer);
+                            if(sbf_answer!=0 && sbf_answer!=0xFF)SBF->del( s.c_str(),&sbf_answer);
+                            if(kbf_answer!=0 && kbf_answer!=0xFF)KBF->del( s.c_str(),&kbf_answer);
+                        }
+                        mxsize= max( mxsize , (int)mp.size() );
+                        allcnt++;
                     }
-                    else {
-                        mp[s]=0;
-                        KVBF->del( s.c_str(),&answer);
-                        if(sbf_answer!=0 && sbf_answer!=0xFF)SBF->del( s.c_str(),&sbf_answer);
-                        if(kbf_answer!=0 && kbf_answer!=0xFF)KBF->del( s.c_str(),&kbf_answer);
+                    fi.close();
+                    delete(KVBF);
+                    delete(SBF);
+                    delete(KBF);
+                    for(it=vmp.begin();it!=vmp.end();it++){
+                        printf("value -> %d  count = %d\n",it->first,it->second);
                     }
-                    mxsize= max( mxsize , (int)mp.size() );
-                    allcnt++;
                 }
                 printf("error rate = %lf sbf error rate = %lf kbf error rate = %lf\n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt,1.0*kbf_wrong_query/allcnt);
-                int variant = (p==0?i:( p==1?j:k ));
                 fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<" "<<1.0*kbf_wrong_query/allcnt<<endl;
-                fi.close();
-                delete(KVBF);
-                delete(SBF);
-                delete(KBF);
-                for(it=vmp.begin();it!=vmp.end();it++){
-                    printf("value -> %d  count = %d\n",it->first,it->second);
-                }
                 printf("max size = %d\n",mxsize);
             }
         }

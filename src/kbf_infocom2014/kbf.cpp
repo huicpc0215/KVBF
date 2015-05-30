@@ -4,10 +4,13 @@
 #include<cstdio>
 #include<cstdlib>
 #include<set>
+#include<time.h>
+#include<algorithm>
 using namespace std;
 #define DK 0xFF
 
 kbf::kbf(size_t _hash_num=3,size_t totol_size=65536){
+
     cell = ( byte *) malloc( totol_size /2 );
     memset( cell , 0 ,sizeof (cell) );
 
@@ -17,6 +20,7 @@ kbf::kbf(size_t _hash_num=3,size_t totol_size=65536){
     m = totol_size /2 ;
     hash_num = _hash_num;
 
+    init_seed = rand()%(m/hash_num);
 }
 
 kbf::~kbf(){
@@ -27,7 +31,7 @@ kbf::~kbf(){
 void kbf::get(const char *key,byte* answer){
     *answer = DK;
     size_t each_cell = m / hash_num;
-    size_t tmp = 0 , now = 0;
+    size_t tmp = init_seed , now = 0;
     byte answer_set=0x0F;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
@@ -45,6 +49,7 @@ void kbf::get(const char *key,byte* answer){
             if( (cell[now+tmp]&(cell[now+tmp-1]) ) != 0 )
                 answer_set&=cell[now+tmp];
         }
+        now+=each_cell;
     }
     if( *answer == DK ){
         if( answer_set!=0 && (answer_set&(answer_set-1))==0 )
@@ -54,17 +59,18 @@ void kbf::get(const char *key,byte* answer){
 
 void kbf::ins(const char *key,byte* _Value){
     size_t each_cell = m / hash_num;
-    size_t tmp = 0 , now = 0;
+    size_t tmp = init_seed , now = 0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         count[ now + tmp ] ++;
         cell[ now + tmp] ^=*_Value;
+        now+=each_cell;
     }
 }
 
 void kbf::del(const char *key,byte* _Value){
     size_t each_cell = m / hash_num;
-    size_t tmp = 0 , now = 0;
+    size_t tmp = init_seed , now = 0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[ now + tmp ] > 0 ){
@@ -72,6 +78,7 @@ void kbf::del(const char *key,byte* _Value){
             cell[now+tmp]^=*_Value;
         }
         //else printf(" there is an error in kbf delete!\n");
+        now += each_cell;
     }
 }
 
@@ -81,7 +88,6 @@ void kbf::mdf(const char *key,byte* newValue){
     if(query != 0 && query != 0xFF )del(key,&query);
     ins(key,newValue);
 }
-
 
 size_t kbf::get_hash(const char * key,int seed){
     const unsigned int m = 0x5bd1e995;
