@@ -81,7 +81,7 @@ int main(int argc,char *argv[]){
                     kvbf* KVBF;
                     sbf* SBF;
                     kbf* KBF;
-                    int bestK =(int) ( 0.6931 * j / 90000);
+                    int bestK = 4 ;
                     if( bestK == 0 ){
                         while(1);
                         puts("no bestK");
