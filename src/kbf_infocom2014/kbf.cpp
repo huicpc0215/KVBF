@@ -32,28 +32,27 @@ void kbf::get(const char *key,byte* answer){
     *answer = DK;
     size_t each_cell = m / hash_num;
     size_t tmp = init_seed , now = 0;
-    byte answer_set=0x0F;
+    byte answer_set=0xFF;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp]==0 ){
-            *answer = 0;
+            answer_set &= 0;
         }
         else if( count[now+tmp] == 1 ){
-            *answer = cell[now+tmp];
+            answer_set &= cell[now+tmp];
         }
         else if( count[now+tmp] == 2 ){
             if( cell[now+tmp] != 0 )
                 answer_set&=cell[now+tmp];
         }
         else if( count[now+tmp] == 3 ){
-            if( (cell[now+tmp]&(cell[now+tmp-1]) ) != 0 )
+            if( (cell[now+tmp]&((cell[now+tmp])-1) ) != 0 )
                 answer_set&=cell[now+tmp];
         }
         now+=each_cell;
     }
     if( *answer == DK ){
-        if( answer_set!=0 && (answer_set&(answer_set-1))==0 )
-            *answer = answer_set;
+        *answer = answer_set;
     }
 }
 
@@ -74,8 +73,8 @@ void kbf::del(const char *key,byte* _Value){
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[ now + tmp ] > 0 ){
-            count[now+tmp]--;
-            cell[now+tmp]^=*_Value;
+            count[ now + tmp ]--;
+            cell[now+tmp] ^= *_Value;
         }
         //else printf(" there is an error in kbf delete!\n");
         now += each_cell;

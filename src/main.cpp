@@ -31,7 +31,7 @@ ofstream fo;
 #define hash_default 3
 #define cell_default 90720
 #define layer_default 3
-#define tms_default 2
+#define tms_default 1
 
 int hash_num_begin=hash_default;
 int hash_num_end=hash_default;
@@ -82,6 +82,10 @@ int main(int argc,char *argv[]){
                     sbf* SBF;
                     kbf* KBF;
                     int bestK =(int) ( 0.6931 * j / 90000);
+                    if( bestK == 0 ){
+                        while(1);
+                        puts("no bestK");
+                    }
                     KVBF = new kvbf(i,j,k,1);
                     SBF = new sbf(bestK,j);
                     KBF = new kbf(bestK,j);
@@ -113,7 +117,7 @@ int main(int argc,char *argv[]){
                             kbf_wrong_query++;
                         }
 
-                        if( v < 16 ){
+                        if( v >=0 ){
                             mp[s]=bytev;
                             if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
                             else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
@@ -122,10 +126,10 @@ int main(int argc,char *argv[]){
                             KVBF->mdf(s.c_str(),&bytev);
                         }
                         else {
-                            mp[s]=0;
                             KVBF->del( s.c_str(),&answer);
-                            if(sbf_answer!=0 && sbf_answer!=0xFF)SBF->del( s.c_str(),&sbf_answer);
-                            if(kbf_answer!=0 && kbf_answer!=0xFF)KBF->del( s.c_str(),&kbf_answer);
+                            if(real_answer!=0)SBF->del( s.c_str(),&real_answer);
+                            if(real_answer!=0)KBF->del( s.c_str(),&real_answer);
+                            mp[s]=0;
                         }
                         mxsize= max( mxsize , (int)mp.size() );
                         allcnt++;

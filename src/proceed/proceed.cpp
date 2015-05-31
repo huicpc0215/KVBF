@@ -22,9 +22,11 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
         if( ipptr->protocol==IPPROTO_TCP ){
             struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
                     sizeof( struct iphdr ) );
-            int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->fin))<<2);
+            int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->rst))<<2);
             of<<inet_ntoa(srcaddr)<<"_";
-            of<<inet_ntoa(desaddr)<<" "<<((1<<status))<<endl;
+            of<<inet_ntoa(desaddr)<<" ";
+            if( tcpptr->fin ) of<<0<<endl;
+            else of<<((1<<status))<<endl;
             st.insert(1<<status);
             tms[1<<status]++;
         }
