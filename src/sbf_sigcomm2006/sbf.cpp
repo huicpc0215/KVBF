@@ -59,8 +59,8 @@ void sbf::ins(const char *key,byte * _Value){
     size_t tmp=init_seed,now=0;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
-        if( count[now+tmp] == 0x00 ){
-            count[now+tmp]=0x01;
+        if( count[now+tmp] == 0){
+            count[now+tmp]=1;
             //memcpy( (char *)&cell[i], (const char *)_Value, 1 );
             cell[now+tmp]=*_Value;
         }

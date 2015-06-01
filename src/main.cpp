@@ -28,9 +28,10 @@ map<int,int>::iterator it;
 int mxsize;
 ifstream fi;
 ofstream fo;
+//#define COMPARE_OTHERS
 #define hash_default 3
-#define cell_default 90720
-#define layer_default 3
+#define cell_default 27720
+#define layer_default 2
 #define tms_default 1
 
 int hash_num_begin=hash_default;
@@ -79,16 +80,15 @@ int main(int argc,char *argv[]){
                 int allcnt = 0;
                 for(int tms = 0 ; tms<tms_default;tms++){
                     kvbf* KVBF;
+#ifdef COMPARE_OTHERS
                     sbf* SBF;
                     kbf* KBF;
-                    int bestK = 4 ;
-                    if( bestK == 0 ){
-                        while(1);
-                        puts("no bestK");
-                    }
-                    KVBF = new kvbf(i,j,k,1);
                     SBF = new sbf(bestK,j);
                     KBF = new kbf(bestK,j);
+#endif
+                    int bestK = 4 ;
+                    KVBF = new kvbf(i,j,k,1);
+
                     fi.open("data.in");
                     mp.clear();
                     string s;
@@ -102,33 +102,35 @@ int main(int argc,char *argv[]){
                         //cout<<s<<" "<<v<<endl;
                         //scanf("%s",ch);
                         vmp[bytev]++;
-                        KVBF->get(s.c_str(),&answer);
-                        SBF->get(s.c_str(),&sbf_answer);
-                        KBF->get(s.c_str(),&kbf_answer);
                         real_answer=mp[s];
-
+                        KVBF->get(s.c_str(),&answer);
                         if( real_answer != answer ){
                             wrong_query++;
                         }
-                        if( real_answer != sbf_answer ){
+#ifdef COMPARE_OTHERS
+                        SBF->get(s.c_str(),&sbf_answer);
+                        KBF->get(s.c_str(),&kbf_answer);
+                        if( real_answer != sbf_answer )
                             sbf_wrong_query++;
-                        }
-                        if( real_answer != kbf_answer ){
+                        if( real_answer != kbf_answer )
                             kbf_wrong_query++;
-                        }
-
-                        if( v >=0 ){
+#endif
+                        if( v > 0 ){
                             mp[s]=bytev;
+#ifdef COMPARE_OTHERS
                             if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
                             else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
                             if(kbf_answer==0)KBF->ins(s.c_str(),&bytev);
                             else if(kbf_answer!=0xFF)KBF->mdf(s.c_str(),&bytev);
+#endif
                             KVBF->mdf(s.c_str(),&bytev);
                         }
                         else {
                             KVBF->del( s.c_str(),&answer);
+#ifdef COMPARE_OTHERS
                             if(real_answer!=0)SBF->del( s.c_str(),&real_answer);
                             if(real_answer!=0)KBF->del( s.c_str(),&real_answer);
+#endif
                             mp[s]=0;
                         }
                         mxsize= max( mxsize , (int)mp.size() );
@@ -136,14 +138,21 @@ int main(int argc,char *argv[]){
                     }
                     fi.close();
                     delete(KVBF);
+#ifdef COMPARE_OTHERS
                     delete(SBF);
                     delete(KBF);
+#endif
                     for(it=vmp.begin();it!=vmp.end();it++){
                         printf("value -> %d  count = %d\n",it->first,it->second);
                     }
                 }
+#ifdef COMPARE_OTHERS
                 printf("error rate = %lf sbf error rate = %lf kbf error rate = %lf\n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt,1.0*kbf_wrong_query/allcnt);
                 fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<" "<<1.0*kbf_wrong_query/allcnt<<endl;
+#else
+                printf("error rate = %lf\n",1.0*wrong_query/allcnt);
+                fo<<variant<<" "<<1.0*wrong_query/allcnt<<endl;
+#endif
                 printf("max size = %d\n",mxsize);
             }
         }
