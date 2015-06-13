@@ -22,7 +22,7 @@ kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte
     int tmp;
     int nowsize=cell_num/hash_num,remain=cell_num;
     seed = (int *)malloc( bk_num * sizeof( int ) );
-    block = (kvbf_block **) malloc ( bk_num * sizeof( kvbf_block*) );
+    block = (kvbf_block **) malloc ( bk_num * sizeof( kvbf_block* ) );
     for(size_t i=0;i<bk_num;i++){
         bool same_seed=false;
         do{

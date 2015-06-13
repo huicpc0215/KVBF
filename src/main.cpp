@@ -23,6 +23,8 @@ typedef unsigned char byte;
 size_t kvbf_cell::ly_num=0;
 size_t kvbf_cell::by_num=0;
 map<string,byte> mp;
+map<int,int> valuecnt;
+map<int,int> valuemx;
 map<int,int> vmp;
 map<int,int>::iterator it;
 int mxsize;
@@ -71,6 +73,8 @@ int main(int argc,char *argv[]){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){
                 mxsize=0;
                 vmp.clear();
+                valuemx.clear();
+                valuecnt.clear();
                 printf("start simulation hash = %d cell = %d layer = %d \n",i,j,k);
                 if(p==0) printf("hash_num = %d ",i);
                 else if(p==1) printf("cell_num_per_hash = %d ",j);
@@ -78,15 +82,14 @@ int main(int argc,char *argv[]){
                 int variant = (p==0?i:( p==1?j:k ));
                 int wrong_query = 0,sbf_wrong_query = 0,kbf_wrong_query = 0;
                 int allcnt = 0;
-                for(int tms = 0 ; tms<tms_default;tms++){
                     kvbf* KVBF;
 #ifdef COMPARE_OTHERS
+                    int bestK = 4 ;
                     sbf* SBF;
                     kbf* KBF;
                     SBF = new sbf(bestK,j);
                     KBF = new kbf(bestK,j);
 #endif
-                    int bestK = 4 ;
                     KVBF = new kvbf(i,j,k,1);
 
                     fi.open("data.in");
@@ -97,15 +100,24 @@ int main(int argc,char *argv[]){
                     int v;
                     while( fi>>s ){
                         //if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
+                        allcnt++;
                         fi>>v;
                         bytev =(byte)v;
                         //cout<<s<<" "<<v<<endl;
                         //scanf("%s",ch);
                         vmp[bytev]++;
                         real_answer=mp[s];
+                        if( real_answer != 0 ) valuecnt[ real_answer ] --;
+                        valuecnt[ bytev ]++;
+                        valuemx[ real_answer ] = max( valuemx[ real_answer ], valuecnt[real_answer]);
+                        valuemx[ bytev ] = max( valuemx[ bytev ], valuecnt[ bytev ]);
                         KVBF->get(s.c_str(),&answer);
                         if( real_answer != answer ){
                             wrong_query++;
+                        }
+                        if( wrong_query > allcnt ){
+                            printf("wrong_query = %d allcnt = %d\n",wrong_query , allcnt);
+                            while(1);
                         }
 #ifdef COMPARE_OTHERS
                         SBF->get(s.c_str(),&sbf_answer);
@@ -134,7 +146,6 @@ int main(int argc,char *argv[]){
                             mp[s]=0;
                         }
                         mxsize= max( mxsize , (int)mp.size() );
-                        allcnt++;
                     }
                     fi.close();
                     delete(KVBF);
@@ -142,15 +153,15 @@ int main(int argc,char *argv[]){
                     delete(SBF);
                     delete(KBF);
 #endif
-                    for(it=vmp.begin();it!=vmp.end();it++){
+                    for(it=vmp.begin();it!=vmp.end();it++)
                         printf("value -> %d  count = %d\n",it->first,it->second);
-                    }
-                }
+                    for(it=valuemx.begin();it!=valuemx.end();it++)
+                        printf("valuemx of %d is -> %d\n",it->first,it->second);
 #ifdef COMPARE_OTHERS
                 printf("error rate = %lf sbf error rate = %lf kbf error rate = %lf\n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt,1.0*kbf_wrong_query/allcnt);
                 fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<" "<<1.0*kbf_wrong_query/allcnt<<endl;
 #else
-                printf("error rate = %lf\n",1.0*wrong_query/allcnt);
+                printf("error rate = %lf wrong_query = %d allcnt = %d\n",1.0*wrong_query/allcnt,wrong_query , allcnt);
                 fo<<variant<<" "<<1.0*wrong_query/allcnt<<endl;
 #endif
                 printf("max size = %d\n",mxsize);
