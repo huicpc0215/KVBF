@@ -33,7 +33,7 @@ ofstream fo;
 //#define COMPARE_OTHERS
 #define hash_default 3
 #define cell_default 27720
-#define layer_default 2
+#define layer_default 3
 #define tms_default 1
 
 int hash_num_begin=hash_default;
