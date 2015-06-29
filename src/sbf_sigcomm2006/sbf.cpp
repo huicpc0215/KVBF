@@ -16,15 +16,19 @@
 #define DK 0xFF
 
 sbf::sbf(size_t _hash_num=3,size_t totol_size=65536){
-    printf("construction with %d cells!",totol_size/2);
+    printf("construction with %d cells!",totol_size);
 
-    cell = (byte *) malloc(totol_size/2);
-    memset( cell, 0, sizeof(cell) );
+    cell = (byte *) malloc(totol_size);
+    memset( cell, 0x00, sizeof(cell) );
 
-    count = (byte *)malloc(totol_size/2);
-    memset( count , 0 , sizeof(count) );
+    count = (byte *)malloc(totol_size);
+    memset( count , 0x00 , sizeof(count) );
 
-    m = totol_size/2;
+    for(int i=0;i<totol_size;i++){
+        cell[i]=(unsigned char)0;
+        count[i]=(unsigned char)0;
+    }
+    m = totol_size;
     hash_num = _hash_num;
 
     init_seed=rand()%(m/hash_num);

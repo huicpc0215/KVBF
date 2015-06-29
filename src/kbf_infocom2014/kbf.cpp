@@ -5,21 +5,26 @@
 #include<cstdlib>
 #include<set>
 #include<time.h>
+#include<vector>
 #include<algorithm>
 using namespace std;
 #define DK 0xFF
 
 kbf::kbf(size_t _hash_num=3,size_t totol_size=65536){
 
-    cell = ( byte *) malloc( totol_size /2 );
+    cell = ( byte *) malloc( totol_size );
     memset( cell , 0 ,sizeof (cell) );
 
-    count = ( byte *) malloc( totol_size /2);
+    count = ( byte *) malloc( totol_size );
     memset( count , 0 ,sizeof ( count) );
 
-    m = totol_size /2 ;
+    m = totol_size ;
     hash_num = _hash_num;
 
+    for(int i=0;i<totol_size;i++){
+        cell[i]=(unsigned char)0;
+        count[i]=(unsigned char)0;
+    }
     init_seed = rand()%(m/hash_num);
 }
 
@@ -29,30 +34,26 @@ kbf::~kbf(){
 }
 
 void kbf::get(const char *key,byte* answer){
-    *answer = DK;
     size_t each_cell = m / hash_num;
     size_t tmp = init_seed , now = 0;
-    byte answer_set=0xFF;
+    *answer = 0xFF;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp]==0 ){
-            answer_set &= 0;
+            *answer &= 0;
         }
         else if( count[now+tmp] == 1 ){
-            answer_set &= cell[now+tmp];
+            *answer &= cell[now+tmp];
         }
         else if( count[now+tmp] == 2 ){
             if( cell[now+tmp] != 0 )
-                answer_set&=cell[now+tmp];
+                *answer &= cell[now+tmp];
         }
         else if( count[now+tmp] == 3 ){
-            if( (cell[now+tmp]&((cell[now+tmp])-1) ) != 0 )
-                answer_set&=cell[now+tmp];
+            if( ( cell[now+tmp] & ((cell[now+tmp])-1) ) != 0 )
+                *answer &= cell[now+tmp];
         }
         now+=each_cell;
-    }
-    if( *answer == DK ){
-        *answer = answer_set;
     }
 }
 
