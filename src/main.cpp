@@ -32,7 +32,7 @@ int mxsize;
 ifstream fi;
 ofstream fo;
 //#define COMPARE_OTHERS
-#define hash_default 3
+#define hash_default 4
 #define cell_default 27720
 #define layer_default 3
 #define tms_default 1

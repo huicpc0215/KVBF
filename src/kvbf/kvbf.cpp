@@ -12,8 +12,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<omp.h>
+
 kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte_num=1){
     bk_num = hash_num;
+    omp_set_num_threads(bk_num);
     //kvbf_block::cl_num = cell_num_per_block;
     kvbf_cell::ly_num = layer_num;
     kvbf_cell::by_num = byte_num;
@@ -34,8 +37,7 @@ kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte
                 }
             }
         }while(same_seed);
-        seed[i]=tmp;
-        block[i]=new kvbf_block(tmp,(i==bk_num-1?remain:nowsize));
+        seed[i]=tmp; block[i]=new kvbf_block(tmp,(i==bk_num-1?remain:nowsize));
         remain-=nowsize;
     }
     tmp_value=(byte*)malloc(byte_num * sizeof(byte) );
@@ -51,25 +53,34 @@ kvbf::~kvbf(){
 
 void kvbf::get(const char *key,byte* answer){
     memset(answer,0xFF,kvbf_cell::by_num);
+#pragma omp parallel for
     for(size_t i=0;i<bk_num;i++){
-        block[i]->get(key,tmp_value);
-        for(size_t j=0;j<kvbf_cell::by_num;j++){
-            *(answer+j) &= *(tmp_value+j);
-        }
+        byte tmp=0;
+        block[i]->get(key,&tmp);
+        answer[0]&=tmp;
+        /*
+         *for(size_t j=0;j<kvbf_cell::by_num;j++){
+         *    *(answer+j) &= *(tmp_value+j);
+         *}
+         */
     }
 }
 
 void kvbf::ins(const char *key,byte* _Value){
+#pragma omp parallel for
     for(size_t i=0;i<bk_num;i++){
-        memcpy( tmp_value , _Value, kvbf_cell::by_num );
-        block[i]->ins(key,tmp_value);
+        byte tmp=0;
+        memcpy( &tmp , _Value, kvbf_cell::by_num );
+        block[i]->ins(key,&tmp);
     }
 }
 
 void kvbf::del(const char *key,byte* _Value){
+#pragma omp parallel for
     for(size_t i=0;i<bk_num;i++){
-        memcpy( tmp_value, _Value , kvbf_cell::by_num );
-        block[i]->del(key,tmp_value);
+        byte tmp=0;
+        memcpy( &tmp , _Value , kvbf_cell::by_num );
+        block[i]->del(key,&tmp);
     }
 }
 

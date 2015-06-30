@@ -38,7 +38,7 @@ fi
 
 echo -e "\nend simulation\n"
 
-echo "set term pdfcairo lw 2 font \"Times New Roman,16\"">../src/script/plotgraph.plt
+echo "set term pdfcairo lw 2 font \"Times New Roman,12\"">../src/script/plotgraph.plt
 echo "set output \"result_hash_time.pdf\"">>../src/script/plotgraph.plt
 echo "set xlabel \"${xlabel}\"">>../src/script/plotgraph.plt
 echo "set ylabel \"time\"">>../src/script/plotgraph.plt
