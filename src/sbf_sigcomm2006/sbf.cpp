@@ -111,7 +111,6 @@ void sbf::mdf(const char *key,byte* newValue){
 size_t sbf::get_hash(const char * key,int seed){
     const unsigned int m = 0x5bd1e995;
     const int r = 24;
-    int x=(int)key;
     int len = strlen(key);
 
     // Initialize the hash to a 'random' value

@@ -48,7 +48,6 @@ size_t kvbf_block::hash(const char *key){
     // They're not really 'magic', they just happen to work well.
     const unsigned int m = 0x5bd1e995;
     const int r = 24;
-    int x=(int)key;
     int len = strlen(key);
 
     // Initialize the hash to a 'random' value
