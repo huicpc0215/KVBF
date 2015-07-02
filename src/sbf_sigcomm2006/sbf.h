@@ -11,9 +11,10 @@
 
 #ifndef SBF_H
 #define SBF_H
+#include <string.h>
 
 typedef unsigned char byte;
-typedef unsigned int size_t;
+//typedef unsigned int size_t;
 
 class sbf{
     public:

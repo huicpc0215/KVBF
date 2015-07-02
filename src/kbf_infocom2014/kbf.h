@@ -11,8 +11,10 @@
 #ifndef KBF_H
 #define KBF_H
 
+#include <string.h>
+
 typedef unsigned char byte;
-typedef unsigned int size_t;
+//typedef unsigned int size_t;
 
 class kbf{
     public:
