@@ -34,9 +34,12 @@ void kvbf_cell::get(byte* answer){
     // set the answer's all bits to 1
     memset(answer,0,by_num);
     for(size_t i=0;i<ly_num;i++){
-        for(size_t j=0;j<by_num;j++){
-            ( *(answer+j) ) |= ( *(layer[i]->get()+j ) );
-        }
+        answer[0] |= *(layer[i]->get());
+        /*
+         *for(size_t j=0;j<by_num;j++){
+         *    ( *(answer+j) ) |= ( *(layer[i]->get()+j ) );
+         *}
+         */
     }
 }
 
@@ -47,10 +50,14 @@ void kvbf_cell::get(byte* answer){
 void kvbf_cell::ins(byte* _Value){
     for(size_t i=0;i<ly_num;i++){
         //if( _Value[0] == 0 ) break;
-        for(size_t j=0;j<by_num;j++){
-            *(layer[i]->get()+j) ^= *(_Value+j) ;
-            *(_Value+j) &= *(layer[i]->get()+j) ;
-        }
+        *(layer[i]->get()) ^= *(_Value);
+        *(_Value) &= *(layer[i]->get());
+        /*
+         *for(size_t j=0;j<by_num;j++){
+         *    *(layer[i]->get()+j) ^= *(_Value+j) ;
+         *    *(_Value+j) &= *(layer[i]->get()+j) ;
+         *}
+         */
     }
 }
 
@@ -60,10 +67,14 @@ void kvbf_cell::ins(byte* _Value){
 void kvbf_cell::del(byte* _Value){
     for(size_t i=0;i<ly_num;i++){
         //if( _Value[0] == 0 ) break;
-        for(size_t j=0;j<by_num;j++){
-            *(layer[i]->get()+j) ^= *(_Value+j) ;
-            *(_Value+j) &= ~(*(layer[i]->get()+j));
-        }
+        *(layer[i]->get()) ^= *(_Value);
+        *(_Value ) &= ~(*(layer[i]->get()));
+        /*
+         *for(size_t j=0;j<by_num;j++){
+         *    *(layer[i]->get()+j) ^= *(_Value+j) ;
+         *    *(_Value+j) &= ~(*(layer[i]->get()+j));
+         *}
+         */
     }
 }
 
