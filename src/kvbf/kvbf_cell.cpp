@@ -14,16 +14,16 @@
 #include"kvbf_cell.h"
 
 kvbf_cell::kvbf_cell(){
-    layer = (kvbf_layer**) malloc( ly_num * sizeof( kvbf_layer* ) );
-    for(size_t i=0;i<ly_num;i++){
-        layer[i]=new kvbf_layer(by_num);
-    }
+    layer = (kvbf_layer**) malloc( 3 * sizeof( kvbf_layer* ) );
+    layer[0]=new kvbf_layer(1);
+    layer[1]=new kvbf_layer(1);
+    layer[2]=new kvbf_layer(1);
 }
 
 kvbf_cell::~kvbf_cell(){
-    for(size_t i=0;i<ly_num;i++){
-        delete(layer[i]);
-    }
+    delete(layer[0]);
+    delete(layer[1]);
+    delete(layer[2]);
     free(layer);
 }
 
@@ -32,15 +32,8 @@ kvbf_cell::~kvbf_cell(){
  */
 void kvbf_cell::get(byte* answer){
     // set the answer's all bits to 1
-    memset(answer,0,by_num);
-    for(size_t i=0;i<ly_num;i++){
-        answer[0] |= *(layer[i]->get());
-        /*
-         *for(size_t j=0;j<by_num;j++){
-         *    ( *(answer+j) ) |= ( *(layer[i]->get()+j ) );
-         *}
-         */
-    }
+	*answer=0;
+    *answer = *(layer[0]->get()) | *(layer[1]->get()) | *(layer[2]->get());
 }
 
 
@@ -48,34 +41,24 @@ void kvbf_cell::get(byte* answer){
  * write in parallel may be accelarate insertion
  */
 void kvbf_cell::ins(byte* _Value){
-    for(size_t i=0;i<ly_num;i++){
-        //if( _Value[0] == 0 ) break;
-        *(layer[i]->get()) ^= *(_Value);
-        *(_Value) &= *(layer[i]->get());
-        /*
-         *for(size_t j=0;j<by_num;j++){
-         *    *(layer[i]->get()+j) ^= *(_Value+j) ;
-         *    *(_Value+j) &= *(layer[i]->get()+j) ;
-         *}
-         */
-    }
+    *(layer[0]->get()) ^= *(_Value);
+    *(_Value) &= *(layer[0]->get());
+    *(layer[1]->get()) ^= *(_Value);
+    *(_Value) &= *(layer[1]->get());
+    *(layer[2]->get()) ^= *(_Value);
+    *(_Value) &= *(layer[2]->get());
 }
 
 /*
  * write in parallel maybe accelarate deletion
  */
 void kvbf_cell::del(byte* _Value){
-    for(size_t i=0;i<ly_num;i++){
-        //if( _Value[0] == 0 ) break;
-        *(layer[i]->get()) ^= *(_Value);
-        *(_Value ) &= ~(*(layer[i]->get()));
-        /*
-         *for(size_t j=0;j<by_num;j++){
-         *    *(layer[i]->get()+j) ^= *(_Value+j) ;
-         *    *(_Value+j) &= ~(*(layer[i]->get()+j));
-         *}
-         */
-    }
+    *(layer[0]->get()) ^= *(_Value);
+    *(_Value ) &= ~(*(layer[0]->get()));
+    *(layer[1]->get()) ^= *(_Value);
+    *(_Value ) &= ~(*(layer[1]->get()));
+    *(layer[2]->get()) ^= *(_Value);
+    *(_Value ) &= ~(*(layer[2]->get()));
 }
 
 

@@ -45,7 +45,6 @@ class kvbf_block{
     // hash seed
     int seed;
 
-
     // use the seed and key to generate the position
     // using murmur_hash
     // parameters: char *

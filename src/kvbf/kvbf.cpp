@@ -14,37 +14,24 @@
 #include<string.h>
 #include<omp.h>
 
+//#define PARA
+
+
 kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte_num=1){
     bk_num = hash_num;
+#ifdef PARA
     omp_set_num_threads(bk_num);
+#endif
     //kvbf_block::cl_num = cell_num_per_block;
-    kvbf_cell::ly_num = layer_num;
-    kvbf_cell::by_num = byte_num;
-    int *seed;
-    int tmp;
-    int nowsize=cell_num/hash_num,remain=cell_num;
-    seed = (int *)malloc( bk_num * sizeof( int ) );
+    int nowsize=cell_num/hash_num;
+	int remain=cell_num;
     block = (kvbf_block **) malloc ( bk_num * sizeof( kvbf_block* ) );
     for(size_t i=0;i<bk_num;i++){
-        bool same_seed=false;
-        do{
-            same_seed=false;
-            tmp=rand();
-            for(size_t j=0;j<i;j++){
-                if( seed[j]==tmp ){
-                    same_seed = true;
-                    break;
-                }
-            }
-        }while(same_seed);
-        seed[i]=tmp; block[i]=new kvbf_block(tmp,(i==bk_num-1?remain:nowsize));
+		block[i]=new kvbf_block( (int)i+1 ,(i==bk_num-1?remain:nowsize));
         remain-=nowsize;
     }
-    tmp_value=(byte*)malloc(byte_num * sizeof(byte) );
-    free(seed);
 }
 kvbf::~kvbf(){
-    free(tmp_value);
     for(size_t i=0;i<bk_num;i++){
         delete(block[i]);
     }
@@ -52,43 +39,40 @@ kvbf::~kvbf(){
 }
 
 void kvbf::get(const char *key,byte* answer){
-    memset(answer,0xFF,kvbf_cell::by_num);
+	*answer=0xFF;
+#ifdef PARA
 #pragma omp parallel for
+#endif
     for(size_t i=0;i<bk_num;i++){
         byte tmp=0;
         block[i]->get(key,&tmp);
-        answer[0]&=tmp;
-        /*
-         *for(size_t j=0;j<kvbf_cell::by_num;j++){
-         *    *(answer+j) &= *(tmp_value+j);
-         *}
-         */
+        (*answer)&=tmp;
     }
 }
 
 void kvbf::ins(const char *key,byte* _Value){
+#ifdef PARA
 #pragma omp parallel for
+#endif
     for(size_t i=0;i<bk_num;i++){
         byte tmp=0;
-        memcpy( &tmp , _Value, kvbf_cell::by_num );
+		tmp = *_Value;
         block[i]->ins(key,&tmp);
     }
 }
 
 void kvbf::del(const char *key,byte* _Value){
+#ifdef PARA
 #pragma omp parallel for
+#endif
     for(size_t i=0;i<bk_num;i++){
         byte tmp=0;
-        memcpy( &tmp , _Value , kvbf_cell::by_num );
+		tmp = *_Value;
         block[i]->del(key,&tmp);
     }
 }
 
 void kvbf::mdf(const char *key,byte* newValue){
-    byte * oldValue;
-    oldValue = ( byte* ) malloc( kvbf_cell::by_num );
-    get(key,oldValue);
-    del(key,oldValue);
-    ins(key,newValue);
-    free(oldValue);
+	printf("use modify function\n");
+	printf("DO NOT USE modify function!\n");
 }

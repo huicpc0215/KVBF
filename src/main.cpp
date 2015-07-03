@@ -20,8 +20,6 @@
 #include<time.h>
 typedef unsigned char byte;
 //size_t kvbf_block::cl_num=0;
-size_t kvbf_cell::ly_num=0;
-size_t kvbf_cell::by_num=0;
 map<string,byte> mp;
 map<int,int> valuecnt;
 map<int,int> valuemx;
@@ -66,9 +64,10 @@ int main(int argc,char *argv[]){
         printf("no %d options\n",p);
         return 0;
     }
-    proceed(argv[1]);
+    //proceed(argv[1]);
     srand(time(NULL));
     fo.open("result_statusbf.out");
+	printf("now proceed ends");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_begin;j<=cell_end;j+=cell_default){
             for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){

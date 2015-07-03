@@ -13,13 +13,12 @@
 #include<string.h>
 
 kvbf_layer::kvbf_layer(size_t b=1){
-    Value = (byte*)malloc(b*sizeof(byte));
-    memset(Value,0,b);
-    Value[0]=(unsigned char)0;
+	Value = new byte;
+	*Value = 0;
 }
 
 kvbf_layer::~kvbf_layer(){
-    free(Value);
+    delete(Value);
 }
 
 byte* kvbf_layer::get(){

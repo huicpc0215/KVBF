@@ -20,8 +20,14 @@ kvbf_block::kvbf_block(int _seed=0,int _cl_num=1024){
     cell = (kvbf_cell **)malloc(cl_num*sizeof(kvbf_cell*));
     for(size_t i=0;i<cl_num;i++){
         cell[i]=new kvbf_cell();
+		if( cell[i] == NULL ){
+			printf("cann't new !!");
+		}
     }
-    printf("\ngive cell=%u\n",cl_num);
+	
+	byte tmp;
+    printf("\ngive cell=%u seed=%d\n",cl_num,seed);
+
 }
 
 kvbf_block::~kvbf_block(){
