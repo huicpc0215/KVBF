@@ -65,7 +65,7 @@ int main(int argc,char *argv[]){
         return 0;
     }
     //proceed(argv[1]);
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_statusbf.out");
 	printf("now proceed ends");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
@@ -127,7 +127,7 @@ int main(int argc,char *argv[]){
     }
     fo.close();
 
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_sbf.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_begin;j<=cell_end;j+=cell_default){
@@ -188,7 +188,7 @@ int main(int argc,char *argv[]){
     }
     fo.close();
 
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_kbf.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_begin;j<=cell_end;j+=cell_default){

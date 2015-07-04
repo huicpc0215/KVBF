@@ -25,7 +25,9 @@ kbf::kbf(size_t _hash_num=3,size_t totol_size=65536){
         cell[i]=(unsigned char)0;
         count[i]=(unsigned char)0;
     }
-    init_seed = rand()%(m/hash_num);
+    //init_seed = rand()%(m/hash_num);
+    //init_seed = rand()%(m/hash_num);
+    init_seed = 10;
 }
 
 kbf::~kbf(){
