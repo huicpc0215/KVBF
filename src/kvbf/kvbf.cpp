@@ -13,16 +13,27 @@
 #include<stdlib.h>
 #include<string.h>
 #include<omp.h>
+#include<pthread.h>
 
-//#define PARA
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
+void *add_function(void *ptr){
 
+}
+
+void *del_function(void *ptr){
+
+}
+
+void * kvbf::query_function(void *ptr){
+    byte tmp=0;
+    triple* p = (triple*)ptr;
+    kvbf_block* bk= p->KVBF->block[p->index];
+    bk[p->index]->get(p->key,&tmp);
+    (*(p->answer))&=tmp;
+}
 kvbf::kvbf(size_t hash_num=3,size_t cell_num=1024,size_t layer_num=2,size_t byte_num=1){
     bk_num = hash_num;
-#ifdef PARA
-    omp_set_num_threads(bk_num);
-#endif
-    //kvbf_block::cl_num = cell_num_per_block;
     int nowsize=cell_num/hash_num;
 	int remain=cell_num;
     block = (kvbf_block **) malloc ( bk_num * sizeof( kvbf_block* ) );
@@ -40,20 +51,22 @@ kvbf::~kvbf(){
 
 void kvbf::get(const char *key,byte* answer){
 	*answer=0xFF;
-#ifdef PARA
-#pragma omp parallel for
-#endif
-    for(size_t i=0;i<bk_num;i++){
-        byte tmp=0;
-        block[i]->get(key,&tmp);
-        (*answer)&=tmp;
+    for(int i=0;i<bk_num;i++){
+        /*
+         *byte tmp=0;
+         *block[i]->get(key,&tmp);
+         *(*answer)&=tmp;
+         */
+        triple tmp_triple(i,key,answer,this);
+        pthread_create( &thread_id[i], NULL , query_function, (void*)&tmp_triple);
+    }
+
+    for(int i=0;i<bk_num;i++){
+        pthread_join( thread_id[i],NULL );
     }
 }
 
 void kvbf::ins(const char *key,byte* _Value){
-#ifdef PARA
-#pragma omp parallel for
-#endif
     for(size_t i=0;i<bk_num;i++){
         byte tmp=0;
 		tmp = *_Value;
@@ -62,9 +75,6 @@ void kvbf::ins(const char *key,byte* _Value){
 }
 
 void kvbf::del(const char *key,byte* _Value){
-#ifdef PARA
-#pragma omp parallel for
-#endif
     for(size_t i=0;i<bk_num;i++){
         byte tmp=0;
 		tmp = *_Value;

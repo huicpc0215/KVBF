@@ -12,6 +12,8 @@
 #ifndef KVBF_H
 #define KVBF_H
 #include "kvbf_block.h"
+#include <pthread.h>
+
 class kvbf{
     public:
     // default construction
@@ -40,12 +42,22 @@ class kvbf{
     // return : void
     void mdf(const char *key,byte* newValue);
 
+    struct triple{
+        const char *key;
+        byte * answer;
+        int index;
+        kvbf* KVBF;
+        triple(int _index,const char *_key,byte* _answer,kvbf *_kvbf):index(_index),key(_key),answer(_answer),KVBF(_kvbf){};
+    };
+    static void *query_function(void *ptr);
+    static void *add_function(void *ptr);
+    static void *del_function(void *ptr);
+
     // number of block;
     size_t bk_num;
 
-    private:
-
     // data storage
     kvbf_block **block;
+    pthread_t thread_id[10];
 };
 #endif
