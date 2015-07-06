@@ -16,8 +16,12 @@
 #include<pthread.h>
 
 pthread_mutex_t ans_mutex = PTHREAD_MUTEX_INITIALIZER;
+//#define PARA
 
 void kvbf_constrction(size_t _hash_num,size_t _cell_num, size_t _layer_num, size_t _byte_num){
+#ifdef PARA
+    omp_set_num_threads(_hash_num);
+#endif
     kvbf_block_num = _hash_num;
     kvbf_cell_num = _cell_num;
     kvbf_layer_num = _layer_num;
@@ -29,7 +33,7 @@ void kvbf_destruction(){
     free(kvbf_cells);
 }
 
-size_t kvbf_hash(const char *key,int seed){
+int kvbf_hash(const char *key,int seed){
     // 'm' and 'r' are mixing constants generated offline.
     // They're not really 'magic', they just happen to work well.
     const unsigned int m = 0x5bd1e995;
@@ -75,13 +79,19 @@ void* kvbf_para_query(void * ptr){
 }
 void kvbf_get(const char*key,byte* answer){
     *answer=0xFF;
+
+#ifdef PARA
+#pragma omp parallel for
+#endif
     for(int i=0;i<kvbf_block_num;i++){
-        kvbf_triple p(key,i,&kvbf_tmp_answer[i]);
-        pthread_create( &kvbf_thread_id[i] ,NULL,kvbf_para_query, &p);
+        //kvbf_triple p(key,i,&kvbf_tmp_answer[i]);
+        //pthread_create( &kvbf_thread_id[i] ,NULL,kvbf_para_query, &p);
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key , i ) ) * 3;
+        kvbf_tmp_answer[i] = kvbf_cells[ cell_index ] | kvbf_cells[ cell_index + 1 ] | kvbf_cells[ cell_index + 2 ];
     }
-    for(int i=0;i<kvbf_block_num;i++){
-        pthread_join( kvbf_thread_id[i] , NULL );
-    }
+    //for(int i=0;i<kvbf_block_num;i++){
+        //pthread_join( kvbf_thread_id[i] , NULL );
+    //}
     for(int i=0;i<kvbf_block_num;i++)
         *answer &= kvbf_tmp_answer[i];
 }
@@ -101,13 +111,26 @@ void *kvbf_para_del(void *ptr){
 }
 
 void kvbf_del(const char *key,byte* _Value){
+#ifdef PARA
+#pragma omp parallel for
+#endif
     for(int i=0;i<kvbf_block_num;i++){
-        kvbf_triple p(key,i,_Value);
-        pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_del,&p );
+        //kvbf_triple p(key,i,_Value);
+        //pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_del,&p );
+        byte tmp = *_Value;
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*3;
+        kvbf_cells[ cell_index ] ^= tmp;
+        tmp &= ~ ( kvbf_cells[ cell_index ] );
+        if( tmp  ){
+            kvbf_cells[ cell_index+1 ] ^= tmp;
+            tmp &= ~( kvbf_cells[ cell_index+1 ] );
+            if( tmp )
+                kvbf_cells[ cell_index+2 ] ^= tmp;
+        }
     }
-    for(int i=0;i<kvbf_block_num;i++){
-        pthread_join( kvbf_thread_id[i],NULL );
-    }
+    //for(int i=0;i<kvbf_block_num;i++){
+        //pthread_join( kvbf_thread_id[i],NULL );
+    //}
 }
 
 void *kvbf_para_ins(void *ptr){
@@ -125,11 +148,24 @@ void *kvbf_para_ins(void *ptr){
 }
 
 void kvbf_ins(const char *key,byte* _Value){
+#ifdef PARA
+#pragma omp parallel for
+#endif
     for(int i=0;i<kvbf_block_num;i++){
-        kvbf_triple p(key,i,_Value);
-        pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_ins,&p );
+        //kvbf_triple p(key,i,_Value);
+        //pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_ins,&p );
+        byte tmp = *_Value;
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*3;
+        kvbf_cells[ cell_index ] ^= tmp;
+        tmp &= kvbf_cells[ cell_index ];
+        if(tmp){
+            kvbf_cells[ cell_index+1 ] ^= tmp;
+            tmp &= kvbf_cells[ cell_index+1 ];
+            if(tmp)
+                kvbf_cells[ cell_index+2 ] ^= tmp;
+        }
     }
-    for(int i=0;i<kvbf_block_num;i++){
-        pthread_join( kvbf_thread_id[i],NULL );
-    }
+    //for(int i=0;i<kvbf_block_num;i++){
+        //pthread_join( kvbf_thread_id[i],NULL );
+    //}
 }

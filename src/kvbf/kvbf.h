@@ -31,7 +31,7 @@ byte* kvbf_cells;
 
 void kvbf_constrction(size_t hash_num, size_t cell_num, size_t _layer_num,size_t _bytenum);
 void kvbf_destruction();
-size_t kvbf_hash(const char *key,int seed);
+int kvbf_hash(const char *key,int seed);
 
 void* kvbf_para_query(void * ptr);
 void kvbf_get(const char *key,byte* answer);
