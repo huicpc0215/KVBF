@@ -11,53 +11,34 @@
 
 #ifndef KVBF_H
 #define KVBF_H
-#include "kvbf_block.h"
 #include <pthread.h>
+typedef unsigned char byte;
 
-class kvbf{
-    public:
-    // default construction
-    kvbf(size_t hash_num,size_t cell_num,size_t  layer_num,size_t byte_num);
-
-    // destory function
-    ~kvbf();
-
-    // get key's value
-    // parameters : char *, byte *
-    // return : void
-    void get(const char *key,byte* answer);
-
-    // insert the key
-    // parameters : char *, byte *
-    // return : void
-    void ins(const char *key,byte* _Value);
-
-    // delete the key
-    // parameters : char *, byte *
-    // return : void
-    void del(const char *key,byte* _Value);
-
-    // modefy the key to new value
-    // parameters : char *, byte *
-    // return : void
-    void mdf(const char *key,byte* newValue);
-
-    struct triple{
-        const char *key;
-        byte * answer;
-        int index;
-        kvbf* KVBF;
-        triple(int _index,const char *_key,byte* _answer,kvbf *_kvbf):index(_index),key(_key),answer(_answer),KVBF(_kvbf){};
-    };
-    static void *query_function(void *ptr);
-    static void *add_function(void *ptr);
-    static void *del_function(void *ptr);
-
-    // number of block;
-    size_t bk_num;
-
-    // data storage
-    kvbf_block **block;
-    pthread_t thread_id[10];
+size_t kvbf_cell_num;
+size_t kvbf_block_num;
+size_t kvbf_layer_num;
+size_t kvbf_byte_num;
+size_t kvbf_each_block;
+pthread_t kvbf_thread_id[10];
+struct kvbf_triple{
+    const char * key;
+    int block_index;
+    byte* val;
+    kvbf_triple(const char* _key,int _block_index,byte* _answer):key(_key),block_index(_block_index),val(_answer){};
 };
+byte* kvbf_cells;
+
+void kvbf_constrction(size_t hash_num, size_t cell_num, size_t _layer_num,size_t _bytenum);
+void kvbf_destruction();
+size_t kvbf_hash(const char *key,int seed);
+
+void* kvbf_para_query(void * ptr);
+void kvbf_get(const char *key,byte* answer);
+
+void* kvbf_para_ins(void *ptr);
+void kvbf_ins(const char *key,byte* _Value);
+
+void* kvbf_para_del(void *ptr);
+void kvbf_del(const char *key,byte* _Value);
+
 #endif

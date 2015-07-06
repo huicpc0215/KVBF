@@ -64,7 +64,7 @@ int main(int argc,char *argv[]){
         printf("no %d options\n",p);
         return 0;
     }
-    //proceed(argv[1]);
+    proceed(argv[1]);
     //srand(time(NULL));
     fo.open("result_statusbf.out");
 	printf("now proceed ends");
@@ -75,8 +75,8 @@ int main(int argc,char *argv[]){
                 int statusbf_exist_wrong_query=0 , statusbf_noexist_wrong_query=0;
                 int total_query = 0;
                 clock_t clk_cnt = 0;
-                kvbf * KVBF;
-                KVBF = new kvbf( i , j , k , 1 );
+                //KVBF = new kvbf( i , j , k , 1 );
+                kvbf_constrction( i , j , k , 1 );
                 fi.open("data.in");
                 mp.clear();
                 string s;
@@ -84,13 +84,15 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    //if( total_query %100000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
 
                     // time ************* begin
                     start = clock();
-                    KVBF->get(s.c_str(),&statusbf_answer);
+                    //KVBF->get(s.c_str(),&statusbf_answer);
+                    kvbf_get(s.c_str(),&statusbf_answer);
                     end = clock();
                     // time ************* end
 
@@ -105,8 +107,10 @@ int main(int argc,char *argv[]){
 
                     // time ************ begin
                     start = clock();
-                    if( real_answer > 0) KVBF->del(s.c_str(),&real_answer);
-                    if( v > 0 )KVBF->ins(s.c_str(),&bytev);
+                    //if( real_answer > 0) KVBF->del(s.c_str(),&real_answer);
+                    //if( v > 0 )KVBF->ins(s.c_str(),&bytev);
+                    if( real_answer > 0 ) kvbf_del( s.c_str(),&real_answer );
+                    if( v > 0 ) kvbf_ins( s.c_str() , & bytev );
                     end = clock();
                     // time ************ end
                     clk_cnt += end - start;
@@ -121,7 +125,7 @@ int main(int argc,char *argv[]){
                         ,statusbf_false_positive ,statusbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end statusbf test\n");
                 fi.close();
-                delete(KVBF);
+                kvbf_destruction();
             }
         }
     }
