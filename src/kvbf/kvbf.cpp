@@ -70,21 +70,20 @@ size_t kvbf_hash(const char *key,int seed){
 void* kvbf_para_query(void * ptr){
     kvbf_triple* p = (kvbf_triple* )ptr;
     size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key , p->block_index ) ) * 3;
-    byte* ans = p->val;
     byte tmp=kvbf_cells[ cell_index ] | kvbf_cells[ cell_index + 1 ] | kvbf_cells[ cell_index + 2 ];
-    pthread_mutex_lock( &ans_mutex );
-    (*ans) &= tmp;
-    pthread_mutex_unlock( &ans_mutex );
+    *(p->val) = tmp;
 }
 void kvbf_get(const char*key,byte* answer){
     *answer=0xFF;
     for(int i=0;i<kvbf_block_num;i++){
-        kvbf_triple p(key,i,answer);
+        kvbf_triple p(key,i,&kvbf_tmp_answer[i]);
         pthread_create( &kvbf_thread_id[i] ,NULL,kvbf_para_query, &p);
     }
     for(int i=0;i<kvbf_block_num;i++){
         pthread_join( kvbf_thread_id[i] , NULL );
     }
+    for(int i=0;i<kvbf_block_num;i++)
+        *answer &= kvbf_tmp_answer[i];
 }
 
 void *kvbf_para_del(void *ptr){
@@ -93,10 +92,12 @@ void *kvbf_para_del(void *ptr){
     size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key, p->block_index ) )*3;
     kvbf_cells[ cell_index ] ^= tmp;
     tmp &= ~ ( kvbf_cells[ cell_index ] );
-    kvbf_cells[ cell_index+1 ] ^= tmp;
-    tmp &= ~ ( kvbf_cells[ cell_index+1 ] );
-    kvbf_cells[ cell_index+2 ] ^= tmp;
-    tmp &= ~ ( kvbf_cells[ cell_index+2 ] );
+    if( tmp  ){
+        kvbf_cells[ cell_index+1 ] ^= tmp;
+        tmp &= ~ ( kvbf_cells[ cell_index+1 ] );
+        if( tmp )
+            kvbf_cells[ cell_index+2 ] ^= tmp;
+    }
 }
 
 void kvbf_del(const char *key,byte* _Value){
@@ -115,10 +116,12 @@ void *kvbf_para_ins(void *ptr){
     size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key, p->block_index ) )*3;
     kvbf_cells[ cell_index ] ^= tmp;
     tmp &= kvbf_cells[ cell_index ];
-    kvbf_cells[ cell_index+1 ] ^= tmp;
-    tmp &= kvbf_cells[ cell_index+1 ];
-    kvbf_cells[ cell_index+2 ] ^= tmp;
-    tmp &= kvbf_cells[ cell_index+2 ];
+    if(tmp){
+        kvbf_cells[ cell_index+1 ] ^= tmp;
+        tmp &= kvbf_cells[ cell_index+1 ];
+        if(tmp)
+            kvbf_cells[ cell_index+2 ] ^= tmp;
+    }
 }
 
 void kvbf_ins(const char *key,byte* _Value){

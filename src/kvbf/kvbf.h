@@ -19,6 +19,7 @@ size_t kvbf_block_num;
 size_t kvbf_layer_num;
 size_t kvbf_byte_num;
 size_t kvbf_each_block;
+byte kvbf_tmp_answer[10];
 pthread_t kvbf_thread_id[10];
 struct kvbf_triple{
     const char * key;

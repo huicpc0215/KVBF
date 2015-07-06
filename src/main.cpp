@@ -65,7 +65,7 @@ int main(int argc,char *argv[]){
         return 0;
     }
     proceed(argv[1]);
-    //srand(time(NULL));
+    srand(time(NULL));
     fo.open("result_statusbf.out");
 	printf("now proceed ends");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
@@ -84,7 +84,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
-                    //if( total_query %100000==0 ) printf("proceed = %d\n",total_query);
+                    if( total_query %100000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
