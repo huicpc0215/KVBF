@@ -64,7 +64,7 @@ echo "plot \"result_statusbf.out\" u 2:5 w lp lc 2 lw 2 pt 19 ps 1 title \"statu
     >>../src/script/plotgraph.plt
 #echo "plot \"result.out\" u 1:2 w lp lc 2 lw 2 pt 19 ps 1 title \"kvbf\""\
     #>>../src/script/plotgraph.plt
-#gnuplot ../src/script/plotgraph.plt
+gnuplot ../src/script/plotgraph.plt
 
 #evince result.pdf
 

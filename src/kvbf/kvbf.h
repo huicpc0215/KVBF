@@ -29,7 +29,7 @@ struct kvbf_triple{
 };
 byte* kvbf_cells;
 
-void kvbf_constrction(size_t hash_num, size_t cell_num, size_t _layer_num,size_t _bytenum);
+void kvbf_construction(size_t hash_num, size_t cell_num, size_t _layer_num,size_t _bytenum);
 void kvbf_destruction();
 int kvbf_hash(const char *key,int seed);
 

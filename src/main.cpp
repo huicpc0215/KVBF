@@ -76,7 +76,7 @@ int main(int argc,char *argv[]){
                 int total_query = 0;
                 clock_t clk_cnt = 0;
                 //KVBF = new kvbf( i , j , k , 1 );
-                kvbf_constrction( i , j , k , 1 );
+                kvbf_construction( i , j , k , 1 );
                 fi.open("data.in");
                 mp.clear();
                 string s;
@@ -120,7 +120,7 @@ int main(int argc,char *argv[]){
                        statusbf_false_nagetive=1.0*statusbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<k<<" "<<statusbf_false_positive<<" "<<statusbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
+                fo<<j<<" "<<i<<" "<<k<<" "<<statusbf_false_positive<<" "<<statusbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
                 printf(" statusbf_false_positive = %lf statusbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,statusbf_false_positive ,statusbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end statusbf test\n");
@@ -181,7 +181,7 @@ int main(int argc,char *argv[]){
                        sbf_false_nagetive=1.0*sbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<sbf_false_positive<<" "<<sbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
+                fo<<j<<" "<<i<<" "<<sbf_false_positive<<" "<<sbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
                 printf(" sbf_false_positive = %lf sbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,sbf_false_positive ,sbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end sbf test\n");
@@ -246,7 +246,7 @@ int main(int argc,char *argv[]){
                        kbf_false_nagetive=1.0*kbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<kbf_false_positive<<" "<<kbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
+                fo<<j<<" "<<i<<" "<<kbf_false_positive<<" "<<kbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
                 printf(" kbf_false_positive = %lf kbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,kbf_false_positive ,kbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end kbf test\n");

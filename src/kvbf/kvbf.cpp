@@ -16,9 +16,9 @@
 #include<pthread.h>
 
 pthread_mutex_t ans_mutex = PTHREAD_MUTEX_INITIALIZER;
-//#define PARA
+#define PARA
 
-void kvbf_constrction(size_t _hash_num,size_t _cell_num, size_t _layer_num, size_t _byte_num){
+void kvbf_construction(size_t _hash_num,size_t _cell_num, size_t _layer_num, size_t _byte_num){
 #ifdef PARA
     omp_set_num_threads(_hash_num);
 #endif
@@ -28,6 +28,8 @@ void kvbf_constrction(size_t _hash_num,size_t _cell_num, size_t _layer_num, size
     kvbf_byte_num = _byte_num;
     kvbf_each_block = kvbf_cell_num/kvbf_block_num;
     kvbf_cells = (byte*)malloc( kvbf_cell_num * kvbf_layer_num * kvbf_byte_num );
+    for(int i=0;i<kvbf_cell_num*kvbf_layer_num*kvbf_byte_num;i++)
+        kvbf_cells[i]=0;
 }
 void kvbf_destruction(){
     free(kvbf_cells);
