@@ -16,7 +16,7 @@
 #include<pthread.h>
 
 pthread_mutex_t ans_mutex = PTHREAD_MUTEX_INITIALIZER;
-#define PARA
+//#define PARA
 
 void kvbf_construction(size_t _hash_num,size_t _cell_num, size_t _layer_num, size_t _byte_num){
 #ifdef PARA

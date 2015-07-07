@@ -1,11 +1,13 @@
 #include "proceed.h"
 #include <set>
+#include <string.h>
 #include <map>
 
 ofstream of;
 set<int> st;
 set<int>::iterator it;
 map<int,int> tms;
+map<string,int> mp;
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
@@ -19,12 +21,16 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
         struct iphdr * ipptr=(struct iphdr *)(bytes + sizeof(struct ether_header));
         srcaddr.s_addr=ipptr->saddr;
         desaddr.s_addr=ipptr->daddr;
-        if( ipptr->protocol==IPPROTO_TCP ){
+        if( ipptr->version == 4 && ipptr->protocol== IPPROTO_TCP ){
             struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
                     sizeof( struct iphdr ) );
             int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->rst))<<2);
+            //printf("source = %s,%d \n",inet_ntoa(srcaddr),ntohs(tcpptr->source));
+            //printf("dest = %s,%d \n",inet_ntoa(desaddr),ntohs(tcpptr->dest));
             of<<inet_ntoa(srcaddr)<<"_";
-            of<<inet_ntoa(desaddr)<<" ";
+            of<<ntohs(tcpptr->source)<<"_";
+            of<<inet_ntoa(desaddr)<<"_";
+            of<<ntohs(tcpptr->dest)<<" ";
             if( tcpptr->fin ) of<<0<<endl;
             else of<<((1<<status))<<endl;
             st.insert(1<<status);
@@ -67,6 +73,21 @@ int proceed(const char *filename){
         fprintf(stdout,"status have %d times=%d\n",*it,tms[*it]);
     }
     fprintf(stdout,"proceeding  ends\n");
-
+    //ifstream fii;
+    //fii.open("data.in");
+    //string strings;
+    //int v;
+    //int maxsize=0;
+    //while(fii>>strings){
+    //    fii>>v;
+    //    mp[strings]=v;
+    //    if(v==0){
+    //        if( mp.find(strings) != mp.end() )
+    //            mp.erase( mp.find(strings) );
+    //    }
+    //    maxsize = max( (int)mp.size() , maxsize );
+    //}
+    //printf(" maxsize = %d\n",maxsize);
+    //fii.close();
     return 0;
 }

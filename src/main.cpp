@@ -31,7 +31,7 @@ ifstream fi;
 ofstream fo;
 //#define COMPARE_OTHERS
 #define hash_default 4
-#define cell_default 27720
+#define cell_default 2772000
 #define layer_default 3
 #define tms_default 1
 
@@ -84,7 +84,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
-                    if( total_query %100000==0 ) printf("proceed = %d\n",total_query);
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
@@ -120,7 +120,7 @@ int main(int argc,char *argv[]){
                        statusbf_false_nagetive=1.0*statusbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<k<<" "<<statusbf_false_positive<<" "<<statusbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
+                fo<<j<<" "<<i<<" "<<k<<" "<<statusbf_false_positive<<" "<<statusbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
                 printf(" statusbf_false_positive = %lf statusbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,statusbf_false_positive ,statusbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end statusbf test\n");
@@ -149,6 +149,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
@@ -181,7 +182,7 @@ int main(int argc,char *argv[]){
                        sbf_false_nagetive=1.0*sbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<sbf_false_positive<<" "<<sbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
+                fo<<j<<" "<<i<<" "<<sbf_false_positive<<" "<<sbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
                 printf(" sbf_false_positive = %lf sbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,sbf_false_positive ,sbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end sbf test\n");
@@ -210,6 +211,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
@@ -246,7 +248,7 @@ int main(int argc,char *argv[]){
                        kbf_false_nagetive=1.0*kbf_exist_wrong_query/total_query;
                 double duration = 1.0*(long long)clk_cnt / CLOCKS_PER_SEC;
                 printf("total_query=%d\n",total_query);
-                fo<<j<<" "<<i<<" "<<kbf_false_positive<<" "<<kbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration<<endl;
+                fo<<j<<" "<<i<<" "<<kbf_false_positive<<" "<<kbf_false_nagetive<<" "<<total_query<<" "<<duration<<" "<<duration/total_query<<endl;
                 printf(" kbf_false_positive = %lf kbf_false_nagetive = %lf duration = %lf total_packet = %d\n duration_per_packet=%lf\n"
                         ,kbf_false_positive ,kbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end kbf test\n");
@@ -354,6 +356,6 @@ int main(int argc,char *argv[]){
             //}
         //}
     //}
-    fo.close();
+    //fo.close();
     return 0;
 }
