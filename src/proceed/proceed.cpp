@@ -5,9 +5,8 @@
 
 ofstream of;
 set<int> st;
-set<int>::iterator it;
+set<int>::iterator st_it;
 map<int,int> tms;
-map<string,int> mp;
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
@@ -69,25 +68,26 @@ int proceed(const char *filename){
 
     pcap_loop( handle , -1 , pcap_callback , NULL);
     pcap_close(handle);
-    for(it=st.begin();it!=st.end();it++){
-        fprintf(stdout,"status have %d times=%d\n",*it,tms[*it]);
+    for(st_it=st.begin();st_it!=st.end();st_it++){
+        fprintf(stdout,"status have %d times=%d\n",*st_it,tms[*st_it]);
     }
     fprintf(stdout,"proceeding  ends\n");
-    //ifstream fii;
-    //fii.open("data.in");
-    //string strings;
-    //int v;
-    //int maxsize=0;
-    //while(fii>>strings){
-    //    fii>>v;
-    //    mp[strings]=v;
-    //    if(v==0){
-    //        if( mp.find(strings) != mp.end() )
-    //            mp.erase( mp.find(strings) );
-    //    }
-    //    maxsize = max( (int)mp.size() , maxsize );
-    //}
-    //printf(" maxsize = %d\n",maxsize);
-    //fii.close();
+    ifstream fii;
+    fii.open("data.in");
+    string strings;
+    int v;
+    int maxsize=0;
+    map<string,int> mp;
+    while(fii>>strings){
+        fii>>v;
+        mp[strings]=v;
+        if(v==0){
+            if( mp.find(strings) != mp.end() )
+                mp.erase( mp.find(strings) );
+        }
+        maxsize = max( (int)mp.size() , maxsize );
+    }
+    printf(" maxsize = %d\n",maxsize);
+    fii.close();
     return 0;
 }
