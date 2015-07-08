@@ -31,7 +31,8 @@ sbf::sbf(size_t _hash_num=3,size_t totol_size=65536){
     m = totol_size;
     hash_num = _hash_num;
 
-    init_seed=rand()%(m/hash_num);
+    //init_seed=rand()%(m/hash_num);
+    init_seed=20;
 }
 
 sbf::~sbf(){

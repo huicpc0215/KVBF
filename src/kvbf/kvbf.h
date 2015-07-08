@@ -11,41 +11,35 @@
 
 #ifndef KVBF_H
 #define KVBF_H
-#include "kvbf_block.h"
-class kvbf{
-    public:
-    // default construction
-    kvbf(size_t hash_num,size_t cell_num,size_t  layer_num,size_t byte_num);
+#include <pthread.h>
+typedef unsigned char byte;
 
-    // destory function
-    ~kvbf();
-
-    // get key's value
-    // parameters : char *, byte *
-    // return : void
-    void get(const char *key,byte* answer);
-
-    // insert the key
-    // parameters : char *, byte *
-    // return : void
-    void ins(const char *key,byte* _Value);
-
-    // delete the key
-    // parameters : char *, byte *
-    // return : void
-    void del(const char *key,byte* _Value);
-
-    // modefy the key to new value
-    // parameters : char *, byte *
-    // return : void
-    void mdf(const char *key,byte* newValue);
-
-    // number of block;
-    size_t bk_num;
-
-    private:
-
-    // data storage
-    kvbf_block **block;
+size_t kvbf_cell_num;
+size_t kvbf_block_num;
+size_t kvbf_layer_num;
+size_t kvbf_byte_num;
+size_t kvbf_each_block;
+byte kvbf_tmp_answer[10];
+pthread_t kvbf_thread_id[10];
+struct kvbf_triple{
+    const char * key;
+    int block_index;
+    byte* val;
+    kvbf_triple(const char* _key,int _block_index,byte* _answer):key(_key),block_index(_block_index),val(_answer){};
 };
+byte* kvbf_cells;
+
+void kvbf_construction(size_t hash_num, size_t cell_num, size_t _layer_num,size_t _bytenum);
+void kvbf_destruction();
+int kvbf_hash(const char *key,int seed);
+
+void* kvbf_para_query(void * ptr);
+void kvbf_get(const char *key,byte* answer);
+
+void* kvbf_para_ins(void *ptr);
+void kvbf_ins(const char *key,byte* _Value);
+
+void* kvbf_para_del(void *ptr);
+void kvbf_del(const char *key,byte* _Value);
+
 #endif

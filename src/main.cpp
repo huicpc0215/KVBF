@@ -31,7 +31,7 @@ ifstream fi;
 ofstream fo;
 //#define COMPARE_OTHERS
 #define hash_default 4
-#define cell_default 27720
+#define cell_default 2772000
 #define layer_default 3
 #define tms_default 1
 
@@ -64,7 +64,7 @@ int main(int argc,char *argv[]){
         printf("no %d options\n",p);
         return 0;
     }
-    //proceed(argv[1]);
+    proceed(argv[1]);
     srand(time(NULL));
     fo.open("result_statusbf.out");
 	printf("now proceed ends");
@@ -75,8 +75,8 @@ int main(int argc,char *argv[]){
                 int statusbf_exist_wrong_query=0 , statusbf_noexist_wrong_query=0;
                 int total_query = 0;
                 clock_t clk_cnt = 0;
-                kvbf * KVBF;
-                KVBF = new kvbf( i , j , k , 1 );
+                //KVBF = new kvbf( i , j , k , 1 );
+                kvbf_construction( i , j , k , 1 );
                 fi.open("data.in");
                 mp.clear();
                 string s;
@@ -84,13 +84,15 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
 
                     // time ************* begin
                     start = clock();
-                    KVBF->get(s.c_str(),&statusbf_answer);
+                    //KVBF->get(s.c_str(),&statusbf_answer);
+                    kvbf_get(s.c_str(),&statusbf_answer);
                     end = clock();
                     // time ************* end
 
@@ -105,8 +107,10 @@ int main(int argc,char *argv[]){
 
                     // time ************ begin
                     start = clock();
-                    if( real_answer > 0) KVBF->del(s.c_str(),&real_answer);
-                    if( v > 0 )KVBF->ins(s.c_str(),&bytev);
+                    //if( real_answer > 0) KVBF->del(s.c_str(),&real_answer);
+                    //if( v > 0 )KVBF->ins(s.c_str(),&bytev);
+                    if( real_answer > 0 ) kvbf_del( s.c_str(),&real_answer );
+                    if( v > 0 ) kvbf_ins( s.c_str() , & bytev );
                     end = clock();
                     // time ************ end
                     clk_cnt += end - start;
@@ -121,13 +125,13 @@ int main(int argc,char *argv[]){
                         ,statusbf_false_positive ,statusbf_false_nagetive,duration,total_query,duration/total_query );
                 printf("end statusbf test\n");
                 fi.close();
-                delete(KVBF);
+                kvbf_destruction();
             }
         }
     }
     fo.close();
 
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_sbf.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_begin;j<=cell_end;j+=cell_default){
@@ -145,6 +149,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
@@ -188,7 +193,7 @@ int main(int argc,char *argv[]){
     }
     fo.close();
 
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_kbf.out");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
         for(int j=cell_begin;j<=cell_end;j+=cell_default){
@@ -206,6 +211,7 @@ int main(int argc,char *argv[]){
                 int v;
                 while( fi >>s ){
                     total_query++;
+                    if( total_query %500000==0 ) printf("proceed = %d\n",total_query);
                     fi>>v;
                     bytev = (byte)v;
                     real_answer=mp[s];
@@ -252,104 +258,6 @@ int main(int argc,char *argv[]){
         }
     }
 
-    //for(int i=hash_num_begin;i<=hash_num_end;i++){
-        //for(int j=mem_begin;j<=mem_end;j+=mem_default){
-            //for(int k=layer_num_per_cell_begin;k<=layer_num_per_cell_end;k++){
-                //mxsize=0;
-                //vmp.clear();
-                //valuemx.clear();
-                //valuecnt.clear();
-                //printf("start simulation hash = %d cell = %d layer = %d \n",i,j,k);
-                //if(p==0) printf("hash_num = %d ",i);
-                //else if(p==1) printf("cell_num_per_hash = %d ",j);
-                //else printf("layer_num_per_cell = %d ",k);
-                //int variant = (p==0?i:( p==1?j:k ));
-                //int wrong_query = 0,sbf_wrong_query = 0,kbf_wrong_query = 0;
-                //int allcnt = 0;
-                    //kvbf* KVBF;
-//#ifdef COMPARE_OTHERS
-                    //int bestK = 4 ;
-                    //sbf* SBF;
-                    //kbf* KBF;
-                    //SBF = new sbf(bestK,j);
-                    //KBF = new kbf(bestK,j);
-//#endif
-                    //KVBF = new kvbf(i,j,k,1);
-
-                    //fi.open("data.in");
-                    //mp.clear();
-                    //string s;
-                    //byte answer,real_answer,bytev,sbf_answer,kbf_answer;
-                    //int v;
-                    //while( fi>>s ){
-                        ////if( allcnt % 10000 == 0 ) printf("proceed %d packet!\n",allcnt);
-                        //allcnt++;
-                        //fi>>v;
-                        //bytev =(byte)v;
-                        ////cout<<s<<" "<<v<<endl;
-                        //vmp[bytev]++;
-                        //real_answer=mp[s];
-                        //if( real_answer != 0 ) valuecnt[ real_answer ] --;
-                        //valuecnt[ bytev ]++;
-                        //valuemx[ real_answer ] = max( valuemx[ real_answer ], valuecnt[real_answer]);
-                        //valuemx[ bytev ] = max( valuemx[ bytev ], valuecnt[ bytev ]);
-                        //KVBF->get(s.c_str(),&answer);
-                        //if( real_answer != answer ){
-                            //wrong_query++;
-                        //}
-                        //if( wrong_query > allcnt ){
-                            //printf("wrong_query = %d allcnt = %d\n",wrong_query , allcnt);
-                            //while(1);
-                        //}
-//#ifdef COMPARE_OTHERS
-                        //SBF->get(s.c_str(),&sbf_answer);
-                        //KBF->get(s.c_str(),&kbf_answer);
-                        //if( real_answer != sbf_answer )
-                            //sbf_wrong_query++;
-                        //if( real_answer != kbf_answer )
-                            //kbf_wrong_query++;
-//#endif
-                        //if( v > 0 ){
-                            ////mp[s]=bytev;
-////#ifdef COMPARE_OTHERS
-                            //if(sbf_answer==0)SBF->ins(s.c_str(),&bytev);
-                            //else if(sbf_answer!=0xFF)SBF->mdf(s.c_str(),&bytev);
-                            //if(kbf_answer==0)KBF->ins(s.c_str(),&bytev);
-                            //else if(kbf_answer!=0xFF)KBF->mdf(s.c_str(),&bytev);
-//#endif
-                            //KVBF->mdf(s.c_str(),&bytev);
-                        //}
-                        //else {
-                            //KVBF->del( s.c_str(),&answer);
-//#ifdef COMPARE_OTHERS
-                            //if(real_answer!=0)SBF->del( s.c_str(),&real_answer);
-                            //if(real_answer!=0)KBF->del( s.c_str(),&real_answer);
-//#endif
-                            //mp[s]=0;
-                        //}
-                        //mxsize= max( mxsize , (int)mp.size() );
-                    //}
-                    //fi.close();
-                    //delete(KVBF);
-//#ifdef COMPARE_OTHERS
-                    //delete(SBF);
-                    //delete(KBF);
-//#endif
-                    //for(it=vmp.begin();it!=vmp.end();it++)
-                        //printf("value -> %d  count = %d\n",it->first,it->second);
-                    //for(it=valuemx.begin();it!=valuemx.end();it++)
-                        //printf("valuemx of %d is -> %d\n",it->first,it->second);
-//#ifdef COMPARE_OTHERS
-                //printf("error rate = %lf sbf error rate = %lf kbf error rate = %lf\n",1.0*wrong_query/allcnt,1.0*sbf_wrong_query/allcnt,1.0*kbf_wrong_query/allcnt);
-                //fo<<variant<<" "<<1.0*wrong_query/allcnt<<" "<<1.0*sbf_wrong_query/allcnt<<" "<<1.0*kbf_wrong_query/allcnt<<endl;
-//#else
-                //printf("error rate = %lf wrong_query = %d allcnt = %d\n",1.0*wrong_query/allcnt,wrong_query , allcnt);
-                //fo<<variant<<" "<<1.0*wrong_query/allcnt<<endl;
-//#endif
-                //printf("max size = %d\n",mxsize);
-            //}
-        //}
-    //}
     fo.close();
     return 0;
 }
