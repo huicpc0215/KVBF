@@ -41,8 +41,8 @@ void kbf::get(const char *key,byte* answer){
     *answer = 0xFF;
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
-        if( count[now+tmp]==0 ){
-            *answer &= 0;
+        if( count[now+tmp] == 0 ){
+            *answer = 0;
         }
         else if( count[now+tmp] == 1 ){
             *answer &= cell[now+tmp];
@@ -79,6 +79,8 @@ void kbf::del(const char *key,byte* _Value){
             count[ now + tmp ]--;
             cell[now+tmp] ^= *_Value;
         }
+        if( count[ now + tmp ] == 0 )
+            cell[ now + tmp ] = 0;
         //else printf(" there is an error in kbf delete!\n");
         now += each_cell;
     }

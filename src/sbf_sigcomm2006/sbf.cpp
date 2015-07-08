@@ -32,7 +32,7 @@ sbf::sbf(size_t _hash_num=3,size_t totol_size=65536){
     hash_num = _hash_num;
 
     //init_seed=rand()%(m/hash_num);
-    init_seed=20;
+    init_seed=10;
 }
 
 sbf::~sbf(){
@@ -65,7 +65,7 @@ void sbf::ins(const char *key,byte * _Value){
     for(int i=0;i<hash_num;i++){
         tmp = get_hash(key,tmp)%each_cell;
         if( count[now+tmp] == 0){
-            count[now+tmp]=1;
+            count[now+tmp] = 1;
             //memcpy( (char *)&cell[i], (const char *)_Value, 1 );
             cell[now+tmp]=*_Value;
         }
