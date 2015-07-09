@@ -7,10 +7,16 @@ ofstream of;
 set<int> st;
 set<int>::iterator st_it;
 map<int,int> tms;
+int flowcnt=0;
+int tcpflowcnt=0;
+int ipflowcnt=0;
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
     }
+	if( flowcnt% 500000 == 0 ) 
+		printf(" flowcnt = %d\n",flowcnt);
+	flowcnt++;
     struct in_addr srcaddr;
     struct in_addr desaddr;
     char * data;
@@ -18,9 +24,11 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
     u_char * ptr;
     if( ntohs(eptr-> ether_type) == ETHERTYPE_IP ){
         struct iphdr * ipptr=(struct iphdr *)(bytes + sizeof(struct ether_header));
+		ipflowcnt++;
         srcaddr.s_addr=ipptr->saddr;
         desaddr.s_addr=ipptr->daddr;
         if( ipptr->version == 4 && ipptr->protocol== IPPROTO_TCP ){
+			tcpflowcnt++;
             struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
                     sizeof( struct iphdr ) );
             int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->rst))<<2);
@@ -35,9 +43,9 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
             st.insert(1<<status);
             tms[1<<status]++;
         }
-        else fprintf(stderr,"now is not tcp protocol\n");
+        //else fprintf(stderr,"now is not tcp protocol\n");
     }
-    else fprintf(stderr , "Now is not IP\n");
+    //else fprintf(stderr , "Now is not IP\n");
 }
 
 int proceed(const char *filename){
@@ -55,22 +63,23 @@ int proceed(const char *filename){
         return -1;
     }
     // compile the regluar expression
-    if(pcap_compile( handle , &filter , filter_rgx , 1 , 0 )!=0){
-        fprintf(stderr , " compile regluar expression error \n");
-        return -1;
-    }
+    //if(pcap_compile( handle , &filter , filter_rgx , 1 , 0 )!=0){
+    //    fprintf(stderr , " compile regluar expression error \n");
+    //    return -1;
+    //}
 
     // set the regular expression
-    if(pcap_setfilter(handle,&filter)!=0){
-        fprintf(stderr , " set regular expression error \n");
-        return -1;
-    }
+    //if(pcap_setfilter(handle,&filter)!=0){
+    //    fprintf(stderr , " set regular expression error \n");
+    //    return -1;
+    //}
 
     pcap_loop( handle , -1 , pcap_callback , NULL);
     pcap_close(handle);
     for(st_it=st.begin();st_it!=st.end();st_it++){
         fprintf(stdout,"status have %d times=%d\n",*st_it,tms[*st_it]);
     }
+	printf("packets=%d , tcp packets=%d, ip packets=%d\n",flowcnt,tcpflowcnt,ipflowcnt);
     fprintf(stdout,"proceeding  ends\n");
     ifstream fii;
     fii.open("data.in");
@@ -89,5 +98,6 @@ int proceed(const char *filename){
     }
     printf(" maxsize = %d\n",maxsize);
     fii.close();
+	//exit(0);
     return 0;
 }
