@@ -31,7 +31,7 @@ ifstream fi;
 ofstream fo;
 //#define COMPARE_OTHERS
 #define hash_default 4
-#define cell_default 2772000
+#define cell_default 7257600
 #define layer_default 3
 #define tms_default 1
 
@@ -65,7 +65,7 @@ int main(int argc,char *argv[]){
         return 0;
     }
     proceed(argv[1]);
-    srand(time(NULL));
+    //srand(time(NULL));
     fo.open("result_statusbf.out");
 	printf("now proceed ends");
     for(int i=hash_num_begin;i<=hash_num_end;i++){
