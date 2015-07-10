@@ -7,10 +7,18 @@ ofstream of;
 set<int> st;
 set<int>::iterator st_it;
 map<int,int> tms;
+struct timeval starttime;
+struct timeval endtime;
+bool FirstCapture=true;
 void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * bytes){
     if( bytes == NULL ){
         return ;
     }
+    if(FirstCapture){
+        FirstCapture=false;
+        starttime=h->ts;
+    }
+    endtime=h->ts;
     struct in_addr srcaddr;
     struct in_addr desaddr;
     char * data;
