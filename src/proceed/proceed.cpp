@@ -88,6 +88,13 @@ int proceed(const char *filename){
         fprintf(stdout,"status have %d times=%d\n",*st_it,tms[*st_it]);
     }
 	printf("packets=%d , tcp packets=%d, ip packets=%d\n",flowcnt,tcpflowcnt,ipflowcnt);
+    printf("packet start at: \n");
+    struct tm * timeinfo;
+    timeinfo = localtime(&starttime.tv_sec);
+    printf("%s",asctime(timeinfo));
+    timeinfo = localtime(&endtime.tv_sec);
+    printf("packet end at: \n");
+    printf("%s",asctime(timeinfo));
     fprintf(stdout,"proceeding  ends\n");
     ifstream fii;
     fii.open("data.in");
