@@ -126,8 +126,12 @@ void kvbf_del(const char *key,byte* _Value){
         if( tmp  ){
             kvbf_cells[ cell_index+1 ] ^= tmp;
             tmp &= ~( kvbf_cells[ cell_index+1 ] );
-            if( tmp )
+            if( tmp ){
                 kvbf_cells[ cell_index+2 ] ^= tmp;
+                tmp &= ~( kvbf_cells[ cell_index+2 ] );
+                if( tmp )
+                    kvbf_cells[ cell_index+3 ] ^= tmp;
+            }
         }
     }
     //for(int i=0;i<kvbf_block_num;i++){
@@ -163,8 +167,12 @@ void kvbf_ins(const char *key,byte* _Value){
         if(tmp){
             kvbf_cells[ cell_index+1 ] ^= tmp;
             tmp &= kvbf_cells[ cell_index+1 ];
-            if(tmp)
+            if(tmp){
                 kvbf_cells[ cell_index+2 ] ^= tmp;
+                tmp &= kvbf_cells[ cell_index+2 ];
+                if(tmp){
+                    kvbf_cells[ cell_index+3 ] ^= tmp;
+            }
         }
     }
     //for(int i=0;i<kvbf_block_num;i++){
