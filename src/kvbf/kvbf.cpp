@@ -75,7 +75,7 @@ int kvbf_hash(const char *key,int seed){
 
 void* kvbf_para_query(void * ptr){
     kvbf_triple* p = (kvbf_triple* )ptr;
-    size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key , p->block_index ) ) * 3;
+    size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key , p->block_index ) ) * 4;
     byte tmp=kvbf_cells[ cell_index ] | kvbf_cells[ cell_index + 1 ] | kvbf_cells[ cell_index + 2 ];
     *(p->val) = tmp;
 }
@@ -88,8 +88,8 @@ void kvbf_get(const char*key,byte* answer){
     for(int i=0;i<kvbf_block_num;i++){
         //kvbf_triple p(key,i,&kvbf_tmp_answer[i]);
         //pthread_create( &kvbf_thread_id[i] ,NULL,kvbf_para_query, &p);
-        int cell_index = ( kvbf_each_block * i + kvbf_hash( key , i ) ) * 3;
-        kvbf_tmp_answer[i] = kvbf_cells[ cell_index ] | kvbf_cells[ cell_index + 1 ] | kvbf_cells[ cell_index + 2 ];
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key , i ) ) * 4;
+        kvbf_tmp_answer[i] = kvbf_cells[ cell_index ] | kvbf_cells[ cell_index + 1 ] | kvbf_cells[ cell_index + 2 ] | kvbf_cells[cell_index + 3];
     }
     //for(int i=0;i<kvbf_block_num;i++){
         //pthread_join( kvbf_thread_id[i] , NULL );
@@ -120,7 +120,7 @@ void kvbf_del(const char *key,byte* _Value){
         //kvbf_triple p(key,i,_Value);
         //pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_del,&p );
         byte tmp = *_Value;
-        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*3;
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*4;
         kvbf_cells[ cell_index ] ^= tmp;
         tmp &= ~ ( kvbf_cells[ cell_index ] );
         if( tmp  ){
@@ -142,7 +142,7 @@ void kvbf_del(const char *key,byte* _Value){
 void *kvbf_para_ins(void *ptr){
     kvbf_triple *p = (kvbf_triple*) ptr;
     byte tmp=*(p->val);
-    size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key, p->block_index ) )*3;
+    size_t cell_index = ( kvbf_each_block * p->block_index + kvbf_hash( p->key, p->block_index ) )*4;
     kvbf_cells[ cell_index ] ^= tmp;
     tmp &= kvbf_cells[ cell_index ];
     if(tmp){
@@ -161,7 +161,7 @@ void kvbf_ins(const char *key,byte* _Value){
         //kvbf_triple p(key,i,_Value);
         //pthread_create( &kvbf_thread_id[i],NULL,kvbf_para_ins,&p );
         byte tmp = *_Value;
-        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*3;
+        int cell_index = ( kvbf_each_block * i + kvbf_hash( key, i ) )*4;
         kvbf_cells[ cell_index ] ^= tmp;
         tmp &= kvbf_cells[ cell_index ];
         if(tmp){
