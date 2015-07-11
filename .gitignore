@@ -26,3 +26,6 @@ main
 
 # build directory
 build
+
+# pdf file
+*.pdf
