@@ -44,6 +44,8 @@ class sbf{
     // return void
     void mdf(const char *key,byte* newValue);
 
+	// print cell
+	void prt(const char *key);
     size_t m;
 
     private:

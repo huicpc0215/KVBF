@@ -31,7 +31,7 @@ ifstream fi;
 ofstream fo;
 //#define COMPARE_OTHERS
 #define hash_default 4
-#define cell_default 7257600
+#define cell_default 720720
 #define layer_default 4
 #define tms_default 1
 
@@ -159,11 +159,13 @@ int main(int argc,char *argv[]){
                     SBF->get(s.c_str(),&sbf_answer);
                     end = clock();
                     // time ************* end
+				
 
                     clk_cnt += end - start;
-                    if( real_answer != 0 )
+                    if( real_answer != 0 ){
                         if(real_answer!=sbf_answer)
-                            sbf_exist_wrong_query++;
+							sbf_exist_wrong_query++;
+					}
                     if( real_answer == 0 )
                         if(real_answer!=sbf_answer)
                             sbf_noexist_wrong_query++;
@@ -171,8 +173,10 @@ int main(int argc,char *argv[]){
 
                     // time ************ begin
                     start = clock();
-                    if( real_answer > 0 ) SBF->del(s.c_str(),&real_answer);
-                    if( v > 0 ) SBF->ins(s.c_str(),&bytev);
+                    if( real_answer > 0 )
+						SBF->del(s.c_str(),&real_answer);
+                    if( v > 0 ) 
+						SBF->ins(s.c_str(),&bytev);
                     end = clock();
                     // time ************ end
                     clk_cnt += end - start;

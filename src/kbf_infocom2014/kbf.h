@@ -44,6 +44,9 @@ class kbf{
     // return : void
     void mdf(const char *key,byte* newValue);
 
+	//  print each cell
+	void prt(const char *key);
+
     size_t m;
 
     private:

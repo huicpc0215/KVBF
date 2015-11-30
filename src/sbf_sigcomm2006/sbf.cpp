@@ -94,6 +94,16 @@ void sbf::del(const char *key, byte* _Value){
     }
 }
 
+void sbf::prt(const char *key){
+	size_t each_cell = m / hash_num;
+	size_t tmp= init_seed, now=0;
+	printf("\nin sbf----------------\n");
+	for(int i=0;i<hash_num;i++){
+		tmp = get_hash(key,tmp)%each_cell;
+		printf("%d th cell = (cnt=%d,cell=%d)\n",i,count[now+tmp],cell[now+tmp]);
+		now += each_cell;
+	}
+}
 void sbf::mdf(const char *key,byte* newValue){
     size_t each_cell = m / hash_num;
     size_t tmp=init_seed,now=0;

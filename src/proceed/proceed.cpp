@@ -30,6 +30,11 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
     char * data;
     const struct ether_header * eptr = ( struct ether_header * ) bytes;
     u_char * ptr;
+	fprintf(stdout , "ETHERTYPE_IP == %hx\n",ETHERTYPE_IP );
+	fprintf(stdout , "now_type == %hx\n", ntohs(eptr-> ether_type) );
+	for( int i=0;i<6;i++){
+		fprintf(stdout , "now_src mac == %x \n", eptr->ether_shost[i]);
+	}
     if( ntohs(eptr-> ether_type) == ETHERTYPE_IP ){
         struct iphdr * ipptr=(struct iphdr *)(bytes + sizeof(struct ether_header));
 		ipflowcnt++;
@@ -53,7 +58,36 @@ void pcap_callback(u_char* user, const struct pcap_pkthdr *h, const u_char * byt
         }
         //else fprintf(stderr,"now is not tcp protocol\n");
     }
-    //else fprintf(stderr , "Now is not IP\n");
+	else if( ntohs(eptr-> ether_type) == 0 ){
+        struct iphdr * ipptr=(struct iphdr *)(bytes + sizeof(struct ether_header)+2);
+		ipflowcnt++;
+        srcaddr.s_addr=ipptr->saddr;
+        desaddr.s_addr=ipptr->daddr;
+        if( ipptr->version == 4 && ipptr->protocol== IPPROTO_TCP ){
+			tcpflowcnt++;
+            struct tcphdr* tcpptr = ( struct tcphdr *)(bytes + sizeof( struct ether_header )+
+                    sizeof( struct iphdr ) );
+            int status=((1&(tcpptr->syn))<<0)|((1&(tcpptr->ack))<<1)|((1&(tcpptr->rst))<<2);
+            //printf("source = %s,%d \n",inet_ntoa(srcaddr),ntohs(tcpptr->source));
+            //printf("dest = %s,%d \n",inet_ntoa(desaddr),ntohs(tcpptr->dest));
+            of<<inet_ntoa(srcaddr)<<"_";
+            of<<ntohs(tcpptr->source)<<"_";
+            of<<inet_ntoa(desaddr)<<"_";
+            of<<ntohs(tcpptr->dest)<<" ";
+            if( tcpptr->fin ) of<<0<<endl;
+            else of<<((1<<status))<<endl;
+            st.insert(1<<status);
+            tms[1<<status]++;
+        }
+        else {
+			fprintf(stderr,"now is not tcp protocol\n");
+			while(1);	
+		}
+	}
+    else {
+		fprintf(stdout , "Now is not IP == %hx\n",ntohs(eptr->ether_type) );
+		while(1);
+	}
 }
 
 int proceed(const char *filename){
